@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -66,6 +66,19 @@ export default function Hero() {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [animKey, setAnimKey] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <>
@@ -138,15 +151,17 @@ export default function Hero() {
           ))}
         </Swiper>
 
-        {/* Dark overlay - more subtle gradient */}
+        {/* Dark overlay - adjusted for mobile */}
         <div
           className="absolute inset-0 z-10"
           style={{
-            background:
-              "linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0) 100%)",
+            background: isMobile
+              ? "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.45) 100%)"
+              : "linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0) 100%)",
           }}
         />
-        {/* Bottom vignette - more subtle */}
+        
+        {/* Bottom vignette */}
         <div
           className="absolute bottom-0 left-0 right-0 h-40 z-10"
           style={{
@@ -155,28 +170,27 @@ export default function Hero() {
           }}
         />
 
-        {/* Left text content */}
+        {/* Left text content - centered on mobile */}
         <div className="absolute inset-0 z-20 flex items-center">
           <div className="container mx-auto px-6 lg:px-16">
-            <div className="max-w-xl" key={animKey}>
-              {/* Tag - minimal style with primary color */}
-
-              <div className="a-tag mb-5">
+            <div className={`${isMobile ? 'text-center w-full' : 'max-w-xl'}`} key={animKey}>
+              {/* Tag */}
+              <div className={`a-tag mb-4 md:mb-5 ${isMobile ? 'flex justify-center' : ''}`}>
                 <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-white/70 border border-white/20 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/70" />
                   {slides[activeIndex].tag}
                 </span>
               </div>
 
-              {/* Headline - light font weight */}
-              <h1 className="a-head text-5xl lg:text-6xl font-light text-white leading-[1.1] tracking-tight mb-5">
+              {/* Headline - smaller on mobile */}
+              <h1 className={`a-head ${isMobile ? 'text-3xl sm:text-4xl' : 'text-5xl lg:text-6xl'} font-light text-white leading-[1.1] tracking-tight mb-4 md:mb-5`}>
                 {slides[activeIndex].headline
                   .split(slides[activeIndex].highlight)
                   .map((part, i, arr) => (
                     <span key={i}>
                       {part}
                       {i < arr.length - 1 && (
-                        <span className="text-primary/90 font-normal">
+                        <span className="text-primary/90 font-normal block sm:inline">
                           {slides[activeIndex].highlight}
                         </span>
                       )}
@@ -184,20 +198,20 @@ export default function Hero() {
                   ))}
               </h1>
 
-              {/* Body - subtle opacity */}
-              <p className="a-body text-white/60 text-base leading-relaxed mb-10 max-w-sm">
+              {/* Body */}
+              <p className={`a-body text-white/60 text-sm md:text-base leading-relaxed mb-8 md:mb-10 ${isMobile ? 'max-w-md mx-auto' : 'max-w-sm'}`}>
                 {slides[activeIndex].body}
               </p>
 
-              {/* CTAs - minimal button styling */}
-              <div className="a-cta flex flex-col sm:flex-row gap-3">
-                <Button className="py-6 w-50 uppercase">
+              {/* CTAs - stacked on mobile */}
+              <div className={`a-cta flex ${isMobile ? 'flex-col items-center gap-3' : 'flex-col sm:flex-row gap-3'}`}>
+                <Button className={`py-5 md:py-6 ${isMobile ? 'w-full max-w-xs' : 'w-50'} uppercase`}>
                   {slides[activeIndex].cta}
-                  <ArrowRight className="ml-0 w-4 h-4" />
+                  <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
                 <Button
                   variant="outline"
-                  className="py-6 w-50 uppercase border-white/60 bg-transparent text-white"
+                  className={`py-5 md:py-6 ${isMobile ? 'w-full max-w-xs' : 'w-50'} uppercase border-white/60 bg-transparent text-white`}
                 >
                   {slides[activeIndex].ctaSecondary}
                 </Button>
@@ -206,53 +220,121 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="absolute bottom-16 left-0 right-0 z-20">
+        {/* Bottom bar - restructured for mobile */}
+        <div className="absolute bottom-8 md:bottom-16 left-0 right-0 z-20">
           <div className="container mx-auto px-6 lg:px-16">
-            <div className="flex items-end justify-between gap-4">
-              {/* Stats - minimal styling */}
-              <div
-                key={`stats-${animKey}`}
-                className="a-stats flex gap-10"
-              >
-                {slides[activeIndex].stats.map((stat) => (
-                  <div key={stat.label} className="group">
-                    <p className="text-white text-2xl font-light leading-none">
-                      {stat.value}
-                    </p>
-                    <p className="text-white/40 text-[10px] tracking-[0.2em] uppercase mt-2 group-hover:text-white/60 transition-colors">
-                      {stat.label}
-                    </p>
-                    {/* Subtle accent line */}
-                    <div className="w-6 h-px bg-primary/30 mt-2 group-hover:w-8 transition-all duration-300"></div>
-                  </div>
-                ))}
-              </div>
+            {!isMobile ? (
+              // Desktop layout
+              <div className="flex items-end justify-between gap-4">
+                {/* Stats */}
+                <div
+                  key={`stats-${animKey}`}
+                  className="a-stats flex gap-10"
+                >
+                  {slides[activeIndex].stats.map((stat) => (
+                    <div key={stat.label} className="group">
+                      <p className="text-white text-2xl font-light leading-none">
+                        {stat.value}
+                      </p>
+                      <p className="text-white/40 text-[10px] tracking-[0.2em] uppercase mt-2 group-hover:text-white/60 transition-colors">
+                        {stat.label}
+                      </p>
+                      <div className="w-6 h-px bg-primary/30 mt-2 group-hover:w-8 transition-all duration-300"></div>
+                    </div>
+                  ))}
+                </div>
 
-              {/* Controls - refined */}
-              <div className="flex flex-col items-end gap-4">
-                {/* Prev / Next + counter */}
+                {/* Controls */}
+                <div className="flex flex-col items-end gap-4">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => swiperRef.current?.slidePrev()}
+                      aria-label="Previous slide"
+                      className="w-9 h-9 rounded-full border border-white/30 bg-black/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      {slides.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => swiperRef.current?.slideToLoop(i)}
+                          aria-label={`Slide ${i + 1}`}
+                          className="relative h-0.5 rounded-full overflow-hidden transition-all duration-300 bg-white/25"
+                          style={{
+                            width: i === activeIndex ? "36px" : "12px",
+                          }}
+                        >
+                          {i === activeIndex && (
+                            <span
+                              key={animKey}
+                              className="a-ticker absolute inset-y-0 left-0 bg-white rounded-full"
+                            />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => swiperRef.current?.slideNext()}
+                      aria-label="Next slide"
+                      className="w-9 h-9 rounded-full border border-white/30 bg-black/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <p className="text-white/40 text-xs tabular-nums tracking-widest">
+                    <span className="text-white font-semibold">
+                      {String(activeIndex + 1).padStart(2, "0")}
+                    </span>
+                    {" / "}
+                    {String(slides.length).padStart(2, "0")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              // Mobile layout - centered controls
+              <div className="flex flex-col items-center gap-4">
+                {/* Stats - horizontal scroll on mobile */}
+                <div
+                  key={`stats-${animKey}`}
+                  className="a-stats flex justify-center gap-6 md:gap-10 w-full overflow-x-auto pb-2 scrollbar-hide"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {slides[activeIndex].stats.map((stat) => (
+                    <div key={stat.label} className="group flex-shrink-0 text-center">
+                      <p className="text-white text-xl md:text-2xl font-light leading-none">
+                        {stat.value}
+                      </p>
+                      <p className="text-white/40 text-[8px] md:text-[10px] tracking-[0.2em] uppercase mt-1 md:mt-2">
+                        {stat.label}
+                      </p>
+                      <div className="w-4 md:w-6 h-px bg-primary/30 mx-auto mt-1 md:mt-2"></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Mobile controls - simplified */}
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => swiperRef.current?.slidePrev()}
                     aria-label="Previous slide"
-                    className="w-9 h-9 rounded-full border border-white/30 bg-black/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+                    className="w-8 h-8 rounded-full border border-white/30 bg-black/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
 
-                  {/* Slide dots */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     {slides.map((_, i) => (
                       <button
                         key={i}
-                        onClick={() =>
-                          swiperRef.current?.slideToLoop(i)
-                        }
+                        onClick={() => swiperRef.current?.slideToLoop(i)}
                         aria-label={`Slide ${i + 1}`}
                         className="relative h-0.5 rounded-full overflow-hidden transition-all duration-300 bg-white/25"
                         style={{
-                          width: i === activeIndex ? "36px" : "12px",
+                          width: i === activeIndex ? "24px" : "8px",
                         }}
                       >
                         {i === activeIndex && (
@@ -268,9 +350,9 @@ export default function Hero() {
                   <button
                     onClick={() => swiperRef.current?.slideNext()}
                     aria-label="Next slide"
-                    className="w-9 h-9 rounded-full border border-white/30 bg-black/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+                    className="w-8 h-8 rounded-full border border-white/30 bg-black/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
@@ -283,13 +365,17 @@ export default function Hero() {
                   {String(slides.length).padStart(2, "0")}
                 </p>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Corner accents */}
-        <div className="absolute top-12 left-12 w-12 h-12 border-l border-t border-white/10 z-20"></div>
-        <div className="absolute bottom-12 right-12 w-12 h-12 border-r border-b border-white/10 z-20"></div>
+        {/* Corner accents - hidden on mobile */}
+        {!isMobile && (
+          <>
+            <div className="absolute top-12 left-12 w-12 h-12 border-l border-t border-white/10 z-20"></div>
+            <div className="absolute bottom-12 right-12 w-12 h-12 border-r border-b border-white/10 z-20"></div>
+          </>
+        )}
       </section>
     </>
   );
