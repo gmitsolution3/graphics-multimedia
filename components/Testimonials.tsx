@@ -1,40 +1,47 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useState } from "react";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import ClientImg from "@/assets/client.png";
 
 const testimonials = [
   {
-    quote: "Nexus Digital transformed our online presence completely. Their SEO strategies increased our organic traffic by 300% in just 6 months.",
+    quote:
+      "Graphics Multimedia transformed our online presence completely. Their SEO strategies increased our organic traffic by 300% in just 6 months.",
     author: "Jennifer Lee",
     role: "CEO, TechStart Inc.",
-    image: "/testimonials/client1.jpg",
+    image: ClientImg,
   },
   {
-    quote: "The team's creativity and attention to detail exceeded our expectations. Our brand has never looked better, and the results speak for themselves.",
+    quote:
+      "The team's creativity and attention to detail exceeded our expectations. Our brand has never looked better, and the results speak for themselves.",
     author: "Marcus Johnson",
     role: "Founder, EcoLife",
-    image: "/testimonials/client2.jpg",
+    image: ClientImg,
   },
   {
-    quote: "Working with Nexus Digital was a game-changer for our business. Their social media campaigns generated 5x ROI within the first quarter.",
+    quote:
+      "Working with Graphics Multimedia was a game-changer for our business. Their social media campaigns generated 5x ROI within the first quarter.",
     author: "Amanda Chen",
     role: "Marketing Director, FoodHub",
-    image: "/testimonials/client3.jpg",
+    image: ClientImg,
   },
-]
+];
 
 export default function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-  }
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
 
   const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }
+    setCurrentIndex(
+      (prev) =>
+        (prev - 1 + testimonials.length) % testimonials.length,
+    );
+  };
 
   return (
     <section id="testimonials" className="py-20 lg:py-28 bg-card">
@@ -59,13 +66,13 @@ export default function Testimonials() {
             <div className="absolute -top-8 -left-8 text-8xl font-light opacity-10 select-none">
               "
             </div>
-            
+
             {/* Testimonial content */}
             <div className="text-center px-4">
               <p className="text-xl lg:text-2xl font-light leading-relaxed opacity-80 mb-10">
                 {testimonials[currentIndex].quote}
               </p>
-              
+
               <div className="flex items-center justify-center gap-5">
                 <div className="w-14 h-14 relative overflow-hidden rounded-full">
                   <Image
@@ -104,9 +111,11 @@ export default function Testimonials() {
               aria-label="Previous testimonial"
             >
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-xs tracking-wider uppercase">Previous</span>
+              <span className="text-xs tracking-wider uppercase">
+                Previous
+              </span>
             </button>
-            
+
             {/* Dots - Minimal lines instead of circles */}
             <div className="flex items-center gap-1">
               {testimonials.map((_, index) => (
@@ -125,14 +134,16 @@ export default function Testimonials() {
                 </button>
               ))}
             </div>
-            
+
             {/* Next */}
             <button
               onClick={nextTestimonial}
               className="flex items-center gap-2 text-sm opacity-40 hover:opacity-70 transition-opacity group"
               aria-label="Next testimonial"
             >
-              <span className="text-xs tracking-wider uppercase">Next</span>
+              <span className="text-xs tracking-wider uppercase">
+                Next
+              </span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -153,5 +164,5 @@ export default function Testimonials() {
         }
       `}</style>
     </section>
-  )
+  );
 }

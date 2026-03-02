@@ -15,6 +15,14 @@ import Oli from "@/assets/oli.jpg";
 import Sobuj from "@/assets/sobuj.jpg";
 import Ceo from "@/assets/ceo.jpg";
 
+import Moriom from "@/assets/mariam.jpg";
+import Anik from "@/assets/anik.jpeg";
+import Sabbir from "@/assets/sabbir.jpeg";
+import Siam from "@/assets/siam.jpeg";
+import Moin from "@/assets/moin.jpg";
+import Musfiqur from "@/assets/musfiqur.jpeg";
+import Kawsar from "@/assets/kawsar.png";
+
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -25,52 +33,53 @@ const team = [
     name: "Ashraful Islam",
     role: "Founder & CEO",
     image: Ceo,
-    linkedin: "#",
-    twitter: "#",
+    linkedin: "https://linkedin.com/in/undefined",
   },
+
   {
-    name: "Biplop",
-    role: "Creative Director",
-    image: Biplop,
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Esha",
-    role: "Head of SEO",
-    image: Esha,
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Habib",
-    role: "Marketing Lead",
-    image: Habib,
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Mariam",
-    role: "Marketing Lead",
+    name: "Morium Akter Jannatul",
+    role: "Office Admin",
     image: Mariam,
-    linkedin: "#",
-    twitter: "#",
+    linkedin: "https://linkedin.com/in/mariamapu",
   },
   {
-    name: "Oli",
-    role: "Marketing Lead",
-    image: Oli,
-    linkedin: "#",
-    twitter: "#",
+    name: "Anik Saha",
+    role: "Product Manager",
+    image: Anik,
+    linkedin: "https://linkedin.com/in/aniksahaaorno",
   },
   {
-    name: "Sobuj",
-    role: "Marketing Lead",
-    image: Sobuj,
-    linkedin: "#",
-    twitter: "#",
+    name: "Tariqul Islam Khan",
+    role: "Full Stack Developer",
+    image: Sabbir,
+    linkedin: "https://www.linkedin.com/in/tariqul-islam-khan",
+  },
+  {
+    name: "MD. Siam Hossain",
+    role: "Graphic Designer",
+    image: Siam,
+    linkedin: "https://linkedin.com/in/siamvaiboss",
+  },
+  {
+    name: "Moin Khan",
+    role: "Frontend Developer",
+    image: Moin,
+    linkedin: "https://linkedin.com/in/nmkhans",
+  },
+  {
+    name: "Musfiqur Rahman",
+    role: "Video Editor",
+    image: Musfiqur,
+    linkedin: "https://linkedin.com/in/null",
+  },
+  {
+    name: "Kawsar Ahmed",
+    role: "Office Assistant",
+    image: Kawsar,
+    linkedin: "https://linkedin.com/in/null",
   },
 ];
+
 export default function Team() {
   return (
     <section id="team" className="py-20 lg:py-28 bg-card">
@@ -151,20 +160,14 @@ export default function Team() {
                   {/* Social Links - Minimal hover reveal */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                     <div className="flex items-center justify-center gap-4">
-                      <Link
+                      <a
                         href={member.linkedin}
+                        target="_blank"
                         className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-primary transition-colors"
                         aria-label={`${member.name} LinkedIn`}
                       >
                         <Linkedin className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href={member.twitter}
-                        className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-primary transition-colors"
-                        aria-label={`${member.name} Twitter`}
-                      >
-                        <Twitter className="w-4 h-4" />
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </div>

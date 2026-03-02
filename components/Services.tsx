@@ -6,44 +6,48 @@ import {
   PenTool,
   Mail,
   Globe,
+  Figma,
+  Video,
+  Palette,
+  Cog
 } from "lucide-react";
 
 const services = [
   {
-    icon: Search,
-    title: "SEO Optimization",
-    description:
-      "Boost your search rankings and drive organic traffic with our data-driven SEO strategies.",
-  },
-  {
-    icon: BarChart3,
-    title: "PPC Advertising",
-    description:
-      "Maximize ROI with targeted pay-per-click campaigns that convert visitors into customers.",
-  },
-  {
     icon: Share2,
-    title: "Social Media Marketing",
+    title: "Digital Marketing",
     description:
       "Build your brand presence and engage your audience across all social platforms.",
-  },
-  {
-    icon: PenTool,
-    title: "Content Strategy",
-    description:
-      "Create compelling content that resonates with your audience and drives engagement.",
-  },
-  {
-    icon: Mail,
-    title: "Email Marketing",
-    description:
-      "Nurture leads and boost conversions with personalized email campaigns.",
   },
   {
     icon: Globe,
     title: "Web Development",
     description:
       "Build stunning, high-performance websites that convert visitors into customers.",
+  },
+  {
+    icon: Figma,
+    title: "UI/UX Design",
+    description:
+      "Create stunning, impactful designs that elevate your brand and captivate your audience.",
+  },
+  {
+    icon: Video,
+    title: "Video Editing",
+    description:
+      "Produce dynamic, professional videos that boost visibility and connect with your audience.",
+  },
+  {
+    icon: Palette,
+    title: "Branding & Graphics",
+    description:
+      "Build a strong, memorable brand identity with strategic visuals that leave a lasting impression.",
+  },
+  {
+    icon: Cog,
+    title: "Business Automation",
+    description:
+      "Streamline operations with smart automation solutions that save time and boost productivity.",
   },
 ];
 
@@ -60,7 +64,8 @@ export default function Services() {
             Expertise that delivers
           </h2>
           <p className="text-base lg:text-lg max-w-2xl mx-auto leading-relaxed opacity-70">
-            Strategic solutions crafted for measurable business impact.
+            Strategic solutions crafted for measurable business
+            impact.
           </p>
         </div>
 
@@ -73,7 +78,7 @@ export default function Services() {
             >
               {/* Hover background effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              
+
               {/* Corner accent on hover */}
               <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden">
                 <div className="absolute top-0 right-0 w-12 h-12 bg-primary/10 -rotate-45 translate-x-6 -translate-y-6 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform duration-500"></div>
@@ -83,15 +88,15 @@ export default function Services() {
                 <div className="mb-7 transform group-hover:scale-110 group-hover:translate-x-1 transition-transform duration-300">
                   <service.icon className="w-8 h-8 text-primary opacity-80 group-hover:opacity-100" />
                 </div>
-                
+
                 <h3 className="text-lg font-medium mb-3 tracking-tight group-hover:translate-x-1 transition-transform duration-300">
                   {service.title}
                 </h3>
-                
+
                 <p className="text-sm leading-relaxed opacity-60 group-hover:opacity-80 transition-opacity duration-300">
                   {service.description}
                 </p>
-                
+
                 {/* Subtle accent line with hover effect */}
                 <div className="w-8 h-0.5 bg-primary opacity-30 mt-6 group-hover:w-12 group-hover:opacity-60 transition-all duration-300"></div>
               </div>

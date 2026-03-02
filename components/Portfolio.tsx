@@ -4,46 +4,45 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
-import ProjectOne from "@/assets/project_one.jpg"
+import ProjectOne from "@/assets/phonex.jpg";
+import ProjectTwo from "@/assets/huaway.jpg";
+import ProjectThree from "@/assets/skybuy.jpg";
+import ProjectFour from "@/assets/gm-it-hospital.jpg";
+import ProjectFive from "@/assets/gm-international.jpg";
+import ProjectSix from "@/assets/gm-it.jpg";
 
-const categories = [
-  "All",
-  "Branding",
-  "Web Design",
-  "Social Media",
-  "SEO",
-];
+const categories = ["All", "Branding", "Web Design"];
 
 const projects = [
   {
-    title: "TechStart Rebrand",
+    title: "Phonex",
     category: "Branding",
     image: ProjectOne,
   },
   {
-    title: "EcoLife E-commerce",
-    category: "Web Design",
-    image: ProjectOne,
-  },
-  {
-    title: "FoodHub Campaign",
-    category: "Social Media",
-    image: ProjectOne,
-  },
-  {
-    title: "FinanceGo SEO",
-    category: "SEO",
-    image: ProjectOne,
-  },
-  {
-    title: "StyleCo Identity",
+    title: "Huaway",
     category: "Branding",
-    image: ProjectOne,
+    image: ProjectTwo,
   },
   {
-    title: "CloudSync Platform",
+    title: "Sky buy",
+    category: "Branding",
+    image: ProjectThree,
+  },
+  {
+    title: "GM Hospital",
     category: "Web Design",
-    image: ProjectOne,
+    image: ProjectFour,
+  },
+  {
+    title: "GM International",
+    category: "Web Design",
+    image: ProjectFive,
+  },
+  {
+    title: "GM E-commerce",
+    category: "Web Design",
+    image: ProjectSix,
   },
 ];
 
@@ -69,7 +68,8 @@ export default function Portfolio() {
             Selected work
           </h2>
           <p className="text-base lg:text-lg max-w-2xl mx-auto leading-relaxed opacity-60">
-            A curated collection of projects that showcase our approach and expertise.
+            A curated collection of projects that showcase our
+            approach and expertise.
           </p>
         </div>
 
@@ -93,7 +93,9 @@ export default function Portfolio() {
               {/* Active indicator line */}
               <span
                 className={`absolute -bottom-2 left-0 h-px bg-primary transition-all duration-300 ${
-                  activeCategory === category ? "w-full" : "w-0 group-hover:w-1/2"
+                  activeCategory === category
+                    ? "w-full"
+                    : "w-0 group-hover:w-1/2"
                 }`}
               />
             </button>
@@ -105,7 +107,7 @@ export default function Portfolio() {
           {filteredProjects.map((project, index) => (
             <div
               key={index}
-              className="group relative aspect-[4/3] overflow-hidden bg-muted cursor-pointer"
+              className="group relative aspect-[4/4] overflow-hidden bg-muted cursor-pointer"
             >
               <Image
                 src={project.image}
@@ -113,13 +115,13 @@ export default function Portfolio() {
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              
+
               {/* Minimal overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
               {/* Corner accent */}
               <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden">
-                <div className="absolute top-0 right-0 w-12 h-12 bg-primary/20 rotate-45 translate-x-6 -translate-y-6 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform duration-500"></div>
+                <div className="absolute top-0 right-0 w-12 h-12 bg-primary/80 rotate-45 translate-x-6 -translate-y-6 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform duration-500"></div>
               </div>
 
               {/* Content - Minimal reveal */}

@@ -116,7 +116,7 @@ export default function About() {
 
             <div className="space-y-6">
               <p className="text-sm leading-relaxed opacity-70">
-                Founded in 2012, Nexus Digital has been at the
+                Founded in 2012, Graphics Multimedia has been at the
                 forefront of digital marketing innovation. Our team of
                 experts combines creativity with data-driven
                 strategies to deliver exceptional results for our
@@ -127,10 +127,12 @@ export default function About() {
               <div className="relative pl-6">
                 <div className="absolute left-0 top-0 w-px h-full bg-primary/30"></div>
                 <p className="text-sm italic opacity-60 leading-relaxed">
-                  "We believe that every brand has a unique story to
-                  tell. Our mission is to help businesses connect with
-                  their audience through innovative digital solutions
-                  that drive growth and create lasting impact."
+                  "It is possible to attract people with design and
+                  creativity, so there is nothing beyond design and
+                  visuals I started this business with a good
+                  marketing experience after working in various
+                  companies for many years. The success stories of
+                  many organizations are linked to my journey."
                 </p>
               </div>
             </div>
