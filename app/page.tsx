@@ -4,6 +4,7 @@ import About from "@/components/About";
 import Team from "@/components/Team";
 import Portfolio from "./../components/Portfolio";
 import Testimonials from "./../components/Testimonials";
+import ContactUs from "@/components/ContactUs"
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Team />
       <Portfolio />
       <Testimonials />
+      <ContactUs />
     </main>
   );
 }
