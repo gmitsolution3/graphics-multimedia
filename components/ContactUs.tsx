@@ -165,7 +165,7 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-transparent border-b border-border/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300"
+                    className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300"
                     placeholder="John Doe"
                   />
                 </div>
@@ -185,7 +185,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-transparent border-b border-border/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300"
+                    className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -205,7 +205,7 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full bg-transparent border-b border-border/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none resize-none transition-all duration-300"
+                    className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none resize-none transition-all duration-300"
                     placeholder="Tell us about your project..."
                   />
                 </div>
@@ -214,7 +214,7 @@ export default function Contact() {
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="relative overflow-hidden group bg-transparent border border-border/60 hover:border-primary/50 text-foreground uppercase text-xs tracking-[0.2em] px-8 py-6 rounded-none transition-all duration-500 w-full"
+                    className="relative overflow-hidden group bg-transparent border border-border/60 hover:border-primary/50 text-foreground hover:text-white uppercase text-xs tracking-[0.2em] px-8 py-6 rounded-none transition-all duration-500 w-full"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       Send Message

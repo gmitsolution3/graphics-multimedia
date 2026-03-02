@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Mail } from "lucide-react";
+import { Menu, X, Mail, ChevronDown } from "lucide-react";
 import Logo from "@/assets/logo.png";
 import Image from "next/image";
 
@@ -11,9 +11,18 @@ const navItems = [
   { label: "Home", href: "#home" },
   { label: "Services", href: "#services" },
   { label: "About", href: "#about" },
+  { 
+    label: "Packages", 
+    href: "#packages",
+    dropdown: [
+      { label: "Regular Packages", href: "/packages/regular" },
+      { label: "Custom Packages", href: "/packages/custom" }
+    ]
+  },
   { label: "Team", href: "#team" },
   { label: "Portfolio", href: "#portfolio" },
   { label: "Testimonials", href: "#testimonials" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const FacebookIcon = () => (
@@ -65,6 +74,7 @@ const socialLinks = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [packagesDropdownOpen, setPackagesDropdownOpen] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -74,11 +84,11 @@ export default function Header() {
           <div className="flex items-center justify-between h-9">
             {/* Email */}
             <a
-              href="mailto:hello@nexusdigital.com"
+              href="mailto:info@graphicsmultimedia.com"
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <Mail className="w-3.5 h-3.5 shrink-0" />
-              <span>hello@nexusdigital.com</span>
+              <span>info@graphicsmultimedia.com</span>
             </a>
 
             {/* Social Icons */}
@@ -98,7 +108,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main Header — unchanged */}
+      {/* Main Header */}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20 py-10 lg:py-0">
           {/* Logo */}
@@ -115,17 +125,53 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative text-base tracking-wide opacity-60 hover:opacity-100 transition-opacity group"
-              >
-                {item.label}
-                {/* Active indicator line (you can add active state logic) */}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              if (item.dropdown) {
+                return (
+                  <div
+                    key={item.href}
+                    className="relative py-3"
+                    onMouseEnter={() => setPackagesDropdownOpen(true)}
+                    onMouseLeave={() => setPackagesDropdownOpen(false)}
+                  >
+                    <button
+                      className="relative text-base tracking-wide opacity-60 hover:opacity-100 transition-opacity group flex items-center gap-1"
+                    >
+                      {item.label}
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${packagesDropdownOpen ? 'rotate-180' : ''}`} />
+                      <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {packagesDropdownOpen && (
+                      <div className="absolute top-10 left-0 mt-2 w-48 bg-background border border-border rounded-md shadow-lg py-2 animate-in fade-in-0 zoom-in-95 z-9">
+                        {item.dropdown.map((dropdownItem) => (
+                          <Link
+                            key={dropdownItem.href}
+                            href={dropdownItem.href}
+                            className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                            onClick={() => setPackagesDropdownOpen(false)}
+                          >
+                            {dropdownItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="relative text-base tracking-wide opacity-60 hover:opacity-100 transition-opacity group"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* CTA Button */}
@@ -153,16 +199,40 @@ export default function Header() {
         {mobileMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                if (item.dropdown) {
+                  return (
+                    <div key={item.href} className="flex flex-col gap-2">
+                      <div className="text-sm font-medium text-muted-foreground">
+                        {item.label}
+                      </div>
+                      <div className="flex flex-col gap-2 pl-4">
+                        {item.dropdown.map((dropdownItem) => (
+                          <Link
+                            key={dropdownItem.href}
+                            href={dropdownItem.href}
+                            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {dropdownItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground w-full mt-2">
                 Get Started
               </Button>

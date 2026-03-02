@@ -1,18 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Search,
-  BarChart3,
-  Share2,
-  PenTool,
-  Mail,
-  Globe,
+  Layout,
   Figma,
+  Film,
+  Scissors,
+  Box,
   Video,
-  Palette,
-  Cog
+  TrendingUp,
+  Droplet,
+  Sparkles,
 } from "lucide-react";
 
-const services = [
+/* const services = [
   {
     icon: Share2,
     title: "Digital Marketing",
@@ -48,6 +47,63 @@ const services = [
     title: "Business Automation",
     description:
       "Streamline operations with smart automation solutions that save time and boost productivity.",
+  },
+]; */
+
+const services = [
+  {
+    icon: Layout,
+    title: "UI & UX Design",
+    description:
+      "Design intuitive, user-centered interfaces that enhance experience and drive engagement.",
+  },
+  {
+    icon: Figma,
+    title: "Graphic Design",
+    description:
+      "Create visually compelling designs that communicate your brand message with impact.",
+  },
+  {
+    icon: Film,
+    title: "Motion Graphics Design",
+    description:
+      "Produce dynamic motion visuals that capture attention and elevate your storytelling.",
+  },
+  {
+    icon: Scissors,
+    title: "Rotoscoping",
+    description:
+      "Deliver precise frame-by-frame masking for seamless visual effects and clean composites.",
+  },
+  {
+    icon: Box,
+    title: "2D/3D Animation",
+    description:
+      "Create immersive 2D and 3D animations that bring ideas to life with stunning visual impact.",
+  },
+  {
+    icon: Video,
+    title: "Video Editing",
+    description:
+      "Craft professional, engaging videos that tell powerful stories and inspire action.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Digital Marketing",
+    description:
+      "Drive targeted traffic and measurable growth with data-driven marketing strategies.",
+  },
+  {
+    icon: Droplet,
+    title: "Color Grading",
+    description:
+      "Enhance visuals with cinematic color tones that create mood and visual consistency.",
+  },
+  {
+    icon: Sparkles,
+    title: "Visual Effects",
+    description:
+      "Create stunning visual effects that bring imagination to life with cinematic precision.",
   },
 ];
 

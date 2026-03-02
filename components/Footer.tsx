@@ -148,10 +148,24 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="flex items-center justify-end pe-30">
+          <p className="text- opacity-40">
+            Powered by{" "}
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="opacity-60 hover:opacity-100 text-sky-500 transition-all duration-300 font-medium"
+            >
+              gm group
+            </a>
+          </p>
+        </div>
+
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mt-16 pt-8 border-t border-border/50">
           <p className="text-xs opacity-40 order-2 md:order-1">
-            © {new Date().getFullYear()} Nexus Digital
+            © {new Date().getFullYear()} Graphics Multimedia
           </p>
 
           {/* Social Links - Minimal styling */}
