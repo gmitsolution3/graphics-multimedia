@@ -58,6 +58,6 @@ const PackageSchema = new Schema<IPackage>(
 
 const Package: Model<IPackage> =
   mongoose.models.Package ||
-  mongoose.model<IPackage>("PricingPlan", PackageSchema);
+  mongoose.model<IPackage>("Package", PackageSchema);
 
 export default Package;
