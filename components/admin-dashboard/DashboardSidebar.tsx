@@ -33,6 +33,9 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
+import Image from "next/image";
+
+import Logo from "@/assets/logo.png";
 
 const mainMenuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -68,20 +71,14 @@ export function DashboardSidebar() {
       className="border-r border-sidebar-border"
     >
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Stethoscope className="h-5 w-5" />
-          </div>
-          {!isCollapsed && (
-            <div className="flex flex-col">
-              <span className="text-lg font-bold text-sidebar-foreground">
-                MediCare
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Doctor Portal
-              </span>
-            </div>
-          )}
+        <div className="flex items-center gap-3 text-center">
+          <Image
+            height={300}
+            width={300}
+            src={Logo}
+            alt="Logo"
+            className="w-18 mx-auto"
+          />
         </div>
       </SidebarHeader>
 
