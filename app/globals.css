@@ -127,6 +127,6 @@
   }
 }
 
-body {
+*, body {
   scroll-behavior: smooth;
 }
