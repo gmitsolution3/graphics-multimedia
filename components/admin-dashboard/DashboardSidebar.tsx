@@ -15,51 +15,20 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  LayoutDashboard,
-  Users,
-  Calendar,
-  FileText,
-  Settings,
-  LogOut,
-  Stethoscope,
-  ClipboardList,
-  MessageSquare,
-  Bell,
-  PieChart,
-  UserCircle,
-} from "lucide-react";
-import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import Image from "next/image";
+import { LogOut } from "lucide-react";
 
+import Image from "next/image";
 import Logo from "@/assets/logo.png";
 
-const mainMenuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Appointments", url: "/appointments", icon: Calendar },
-  { title: "Patients", url: "/patients", icon: Users },
-  { title: "Medical Records", url: "/records", icon: FileText },
-  {
-    title: "Prescriptions",
-    url: "/prescriptions",
-    icon: ClipboardList,
-  },
-];
-
-const managementItems = [
-  { title: "Doctors", url: "/doctors", icon: Stethoscope },
-  { title: "Messages", url: "/messages", icon: MessageSquare },
-  { title: "Reports", url: "/reports", icon: PieChart },
-  { title: "Notifications", url: "/notifications", icon: Bell },
-];
-
-const settingsItems = [
-  { title: "Profile", url: "/profile", icon: UserCircle },
-  { title: "Settings", url: "/settings", icon: Settings },
-];
+import {
+  mainMenuItems,
+  managementItems,
+  settingsItems,
+} from "./admin-dashboard-menuitems";
 
 export function DashboardSidebar() {
   const { state } = useSidebar();
@@ -94,9 +63,9 @@ export function DashboardSidebar() {
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <NavLink
                       href={item.url}
-                      exact={item.url === "/"}
+                      exact={item.url === "/admin-dashboard"}
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      activeClassName="bg-primary/10 text-primary font-medium"
                     >
                       <item.icon className="h-5 w-5 shrink-0" />
                       {!isCollapsed && <span>{item.title}</span>}

@@ -1,39 +1,53 @@
-// components/NavLink.tsx
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link, { LinkProps } from "next/link";
 import { forwardRef } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-interface NavLinkProps {
-  href: string;
+interface NavLinkCompatProps extends Omit<LinkProps, "className"> {
+  children: React.ReactNode;
   className?: string;
   activeClassName?: string;
   exact?: boolean;
-  children: React.ReactNode;
-  [key: string]: any;
 }
 
-const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
+const NavLink = forwardRef<HTMLAnchorElement, NavLinkCompatProps>(
   (
     {
-      href,
       className,
       activeClassName,
       exact = false,
+      href,
       children,
       ...props
     },
     ref,
   ) => {
-
-    console.log(href)
     const pathname = usePathname();
 
-    const isActive = exact
-      ? pathname === href
-      : pathname.startsWith(href);
+    // Normalize URLs for comparison
+    const normalizeUrl = (url: string) => {
+      return url.replace(/\/$/, ""); // Remove trailing slash
+    };
+
+    const currentPath = normalizeUrl(pathname || "");
+    const targetPath = normalizeUrl(
+      typeof href === "string" ? href : href.pathname || "",
+    );
+
+    // Determine if link is active
+    let isActive = false;
+
+    if (exact) {
+      isActive = currentPath === targetPath;
+    } else {
+      isActive =
+        currentPath.startsWith(targetPath) &&
+        (targetPath === "" ||
+          currentPath === targetPath ||
+          currentPath.charAt(targetPath.length) === "/");
+    }
 
     return (
       <Link
