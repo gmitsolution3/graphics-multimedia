@@ -37,11 +37,12 @@ export default function PackagesPage() {
   const { data, isLoading } = useGetPackages();
   const packages: IPackage[] = data?.data || [];
 
-  // Define table columns
+  // Define table columns with equal sizing
   const columns: ColumnDef<IPackage>[] = [
     {
       accessorKey: "name",
       header: "Package",
+      size: 250, // Fixed size for package column
       cell: ({ row }) => (
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -49,15 +50,15 @@ export default function PackagesPage() {
               {row.original.name.charAt(0)}
             </span>
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <div className="font-semibold">
+              <div className="font-semibold truncate">
                 {row.getValue("name")}
               </div>
               {row.original.popular && (
                 <Badge
                   variant="secondary"
-                  className="gap-1 bg-amber-100 text-amber-700 hover:bg-amber-100"
+                  className="gap-1 bg-amber-100 text-amber-700 hover:bg-amber-100 shrink-0"
                 >
                   <Star className="h-3 w-3 fill-amber-500" />
                   Popular
@@ -73,9 +74,10 @@ export default function PackagesPage() {
     },
     {
       accessorKey: "price",
-      header: () => <div className="text-right">Pricing</div>,
+      header: () => <div className="text-left">Pricing</div>,
+      size: 150,
       cell: ({ row }) => (
-        <div className="text-right">
+        <div>
           <div className="font-semibold text-lg">
             {formatPrice(row.getValue("price"))}
           </div>
@@ -88,6 +90,7 @@ export default function PackagesPage() {
     {
       id: "services",
       header: "Services Included",
+      size: 200,
       cell: ({ row }) => {
         const services = row.original.services;
         const includedCount = services.filter(
@@ -96,14 +99,13 @@ export default function PackagesPage() {
         const totalServices = services.length;
 
         return (
-          <div className="space-y-2">
+          <div>
             <div className="flex items-center gap-2">
               <div className="text-sm font-medium">
                 {includedCount}/{totalServices} Services
               </div>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-xs shrink-0">
                 {((includedCount / totalServices) * 100).toFixed(0)}%
-                Complete
               </Badge>
             </div>
           </div>
@@ -113,8 +115,9 @@ export default function PackagesPage() {
     {
       accessorKey: "createdAt",
       header: "Created",
+      size: 150,
       cell: ({ row }) => (
-        <div className="space-y-1">
+        <div>
           <div className="text-sm font-medium">
             {formatDate(row.getValue("createdAt"))}
           </div>
@@ -127,8 +130,9 @@ export default function PackagesPage() {
     {
       id: "actions",
       header: "",
+      size: 100,
       cell: ({ row }) => (
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <Eye className="h-4 w-4" />
           </Button>
@@ -193,6 +197,7 @@ export default function PackagesPage() {
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
+                      style={{ width: header.getSize() }}
                       className="h-11 px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider"
                     >
                       {header.isPlaceholder
@@ -208,14 +213,18 @@ export default function PackagesPage() {
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row, index) => (
+                table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className="hover:bg-muted/50 transition-colors group border-b last:border-0"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-6 py-5">
+                      <TableCell
+                        key={cell.id}
+                        style={{ width: cell.column.getSize() }}
+                        className="px-6 py-5"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
