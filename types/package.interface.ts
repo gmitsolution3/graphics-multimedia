@@ -1,4 +1,4 @@
-interface IPackageService {
+export interface IPackageService {
   name: string;
   included: boolean;
 }

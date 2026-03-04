@@ -1,4 +1,4 @@
-import { fetcher } from "@/lib/fetcher";
+import { fetcher } from "@/lib/fetchers/fetcher";
 import useSWR from "swr";
 
 export const useGetPackages = () => {
