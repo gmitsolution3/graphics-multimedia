@@ -3,6 +3,11 @@ export interface IPackageService {
   included: boolean;
 }
 
+export interface IService {
+  _id: string;
+  name: string;
+  createdAt: string;
+}
 export interface IPackage {
   _id: string;
   name: string;

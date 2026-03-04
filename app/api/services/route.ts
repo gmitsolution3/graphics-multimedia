@@ -10,7 +10,6 @@ export async function GET() {
     const services = await Service.find(
       {},
       {
-        createdAt: 0,
         updatedAt: 0,
       },
     ).sort({ createdAt: -1 });

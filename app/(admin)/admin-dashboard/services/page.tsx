@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useGetPackages } from "@/hooks/swr/useGetPackages";
+import { useGetServices } from "@/hooks/swr/useGetServices";
 import { useDelete } from "@/hooks/swr/useDelete";
+
 import {
   Table,
   TableBody,
@@ -11,11 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import PackageTableLoader from "@/components/loaders/PackageTableLoader";
-import AdminPackageDetailModal from "@/components/modals/AdminPackageDetailModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,27 +30,20 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Eye, MoreHorizontal, Star } from "lucide-react";
+import { MoreHorizontal, Star } from "lucide-react";
 
-import { IPackage } from "@/types";
-import { formatPrice, formatDate } from "@/utils";
+import { IService } from "@/types";
+import { formatDate } from "@/utils";
 import Swal from "sweetalert2";
 import Link from "next/link";
 
-export default function PackagesPage() {
-  const { data, isLoading } = useGetPackages();
-  const packages: IPackage[] = data?.data || [];
+export default function ServicesPage() {
+  const { data, isLoading } = useGetServices();
+  const services: IService[] = data?.data || [];
 
-  const [selectedPackage, setSelectedPackage] =
-    useState<IPackage | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(services)
 
-  const handleViewPackage = (pkg: IPackage) => {
-    setSelectedPackage(pkg);
-    setIsModalOpen(true);
-  };
-
-  const { deleteItem } = useDelete("/packages");
+  const { deleteItem } = useDelete("/services");
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -77,85 +69,23 @@ export default function PackagesPage() {
     });
   };
 
-  // Define table columns with equal sizing
-  const columns: ColumnDef<IPackage>[] = [
+  const columns: ColumnDef<IService>[] = [
     {
       accessorKey: "name",
-      header: "Package",
-      size: 250,
-      cell: ({ row }) => (
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-lg font-semibold text-primary">
-              {row.original.name.charAt(0)}
-            </span>
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <div className="font-semibold truncate">
-                {row.getValue("name")}
-              </div>
-              {row.original.popular && (
-                <Badge
-                  variant="secondary"
-                  className="gap-1 bg-amber-100 text-amber-700 hover:bg-amber-100 shrink-0"
-                >
-                  <Star className="h-3 w-3 fill-amber-500" />
-                  Popular
-                </Badge>
-              )}
-            </div>
-            <div className="text-sm text-muted-foreground line-clamp-1">
-              {row.original.description}
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "price",
-      header: () => <div className="text-left">Pricing</div>,
-      size: 150,
+      header: () => <div className="text-left">Name</div>,
+      size: Math.floor(100 / 3), // Equal space for 3 columns
       cell: ({ row }) => (
         <div>
           <div className="font-semibold text-lg">
-            {formatPrice(row.getValue("price"))}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {row.original.period}
+            {row.getValue("name")}
           </div>
         </div>
       ),
-    },
-    {
-      id: "services",
-      header: "Services Included",
-      size: 200,
-      cell: ({ row }) => {
-        const services = row.original.services;
-        const includedCount = services.filter(
-          (s) => s.included,
-        ).length;
-        const totalServices = services.length;
-
-        return (
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="text-sm font-medium">
-                {includedCount}/{totalServices} Services
-              </div>
-              <Badge variant="outline" className="text-xs shrink-0">
-                {((includedCount / totalServices) * 100).toFixed(0)}%
-              </Badge>
-            </div>
-          </div>
-        );
-      },
     },
     {
       accessorKey: "createdAt",
       header: "Created",
-      size: 150,
+      size: Math.floor(100 / 3), // Equal space for 3 columns
       cell: ({ row }) => (
         <div>
           <div className="text-sm font-medium">
@@ -169,18 +99,10 @@ export default function PackagesPage() {
     },
     {
       id: "actions",
-      header: "",
-      size: 100,
+      header: "Action",
+      size: Math.floor(100 / 5), // Equal space for 3 columns
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => handleViewPackage(row.original)}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -205,7 +127,7 @@ export default function PackagesPage() {
   ];
 
   const table = useReactTable({
-    data: packages,
+    data: services,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -221,15 +143,15 @@ export default function PackagesPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Packages
+              Services
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5">
-              Manage your service packages and offerings
+              Manage your services and offerings
             </p>
           </div>
           <Button asChild className="w-full sm:w-auto shadow-sm">
             <Link href="/admin-dashboard/packages/add-new">
-              Add New Package
+              Add New Service
             </Link>
           </Button>
         </div>
@@ -247,7 +169,7 @@ export default function PackagesPage() {
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        style={{ width: header.getSize() }}
+                        style={{ width: `${header.getSize()}%` }}
                         className="h-11 px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider"
                       >
                         {header.isPlaceholder
@@ -272,7 +194,7 @@ export default function PackagesPage() {
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          style={{ width: cell.column.getSize() }}
+                          style={{ width: `${cell.column.getSize()}%` }}
                           className="px-6 py-5"
                         >
                           {flexRender(
@@ -295,7 +217,7 @@ export default function PackagesPage() {
                         </div>
                         <div>
                           <h3 className="font-semibold text-lg">
-                            No packages found
+                            No Services found
                           </h3>
                           <p className="text-sm text-muted-foreground mt-1">
                             Get started by creating your first package
@@ -313,13 +235,6 @@ export default function PackagesPage() {
           </div>
         </Card>
       </section>
-
-      {/* Package Details Modal */}
-      <AdminPackageDetailModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        selectedPackage={selectedPackage}
-      />
     </>
   );
 }

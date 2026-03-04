@@ -10,6 +10,7 @@ import {
   Bell,
   PieChart,
   UserCircle,
+  Box,
 } from "lucide-react";
 
 export const mainMenuItems = [
@@ -19,11 +20,15 @@ export const mainMenuItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "Services",
+    url: "/admin-dashboard/services",
+    icon: Box,
+  },
+  {
     title: "Packages",
     url: "/admin-dashboard/packages",
     icon: FileSpreadsheet,
   },
-  { title: "Patients", url: "/patients", icon: Users },
   { title: "Medical Records", url: "/records", icon: FileText },
   {
     title: "Prescriptions",
