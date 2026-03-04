@@ -20,112 +20,133 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Check, X } from "lucide-react";
+import { Check, X, Eye, MoreHorizontal, Star } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { IPackage } from "@/types";
 import { formatPrice, formatDate } from "@/utils";
 
 export default function PackagesPage() {
   const { data, isLoading } = useGetPackages();
-  const packages = data?.data || [];
+  const packages: IPackage[] = data?.data || [];
 
   // Define table columns
   const columns: ColumnDef<IPackage>[] = [
     {
       accessorKey: "name",
-      header: "Package Name",
+      header: "Package",
       cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.getValue("name")}</div>
-          <div className="text-sm text-muted-foreground">
-            {row.original.description}
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <span className="text-lg font-semibold text-primary">
+              {row.original.name.charAt(0)}
+            </span>
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <div className="font-semibold">
+                {row.getValue("name")}
+              </div>
+              {row.original.popular && (
+                <Badge
+                  variant="secondary"
+                  className="gap-1 bg-amber-100 text-amber-700 hover:bg-amber-100"
+                >
+                  <Star className="h-3 w-3 fill-amber-500" />
+                  Popular
+                </Badge>
+              )}
+            </div>
+            <div className="text-sm text-muted-foreground line-clamp-1">
+              {row.original.description}
+            </div>
           </div>
         </div>
       ),
     },
     {
       accessorKey: "price",
-      header: "Price",
+      header: () => <div className="text-right">Pricing</div>,
       cell: ({ row }) => (
-        <div className="font-medium">
-          {formatPrice(row.getValue("price"))}
-          <span className="text-sm text-muted-foreground ml-1">
+        <div className="text-right">
+          <div className="font-semibold text-lg">
+            {formatPrice(row.getValue("price"))}
+          </div>
+          <div className="text-xs text-muted-foreground">
             {row.original.period}
-          </span>
+          </div>
         </div>
       ),
     },
     {
       id: "services",
-      header: "Services",
+      header: "Services Included",
       cell: ({ row }) => {
         const services = row.original.services;
-        const includedServices = services.filter((s) => s.included);
+        const includedCount = services.filter(
+          (s) => s.included,
+        ).length;
         const totalServices = services.length;
 
         return (
-          <div>
-            <div className="font-medium">
-              {includedServices.length}/{totalServices} Services
-            </div>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {services.slice(0, 3).map((service, index) => (
-                <Badge
-                  key={index}
-                  variant={service.included ? "default" : "outline"}
-                  className="text-xs"
-                >
-                  {service.included ? (
-                    <Check className="h-3 w-3 mr-1" />
-                  ) : (
-                    <X className="h-3 w-3 mr-1" />
-                  )}
-                  {service.name}
-                </Badge>
-              ))}
-              {services.length > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{services.length - 3} more
-                </Badge>
-              )}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-medium">
+                {includedCount}/{totalServices} Services
+              </div>
+              <Badge variant="outline" className="text-xs">
+                {((includedCount / totalServices) * 100).toFixed(0)}%
+                Complete
+              </Badge>
             </div>
           </div>
         );
       },
     },
     {
-      accessorKey: "popular",
-      header: "Status",
-      cell: ({ row }) => (
-        <div>
-          {row.getValue("popular") ? (
-            <Badge className="bg-green-500">Popular</Badge>
-          ) : (
-            <Badge variant="outline">Standard</Badge>
-          )}
-        </div>
-      ),
-    },
-    {
       accessorKey: "createdAt",
       header: "Created",
       cell: ({ row }) => (
-        <div className="text-sm text-muted-foreground">
-          {formatDate(row.getValue("createdAt"))}
+        <div className="space-y-1">
+          <div className="text-sm font-medium">
+            {formatDate(row.getValue("createdAt"))}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            ID: {row.original._id.slice(-6)}
+          </div>
         </div>
       ),
     },
     {
       id: "actions",
-      header: "Actions",
+      header: "",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            Edit
+        <div className="flex items-center justify-end gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Eye className="h-4 w-4" />
           </Button>
-          <Button variant="destructive" size="sm">
-            Delete
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Edit package</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       ),
     },
@@ -143,29 +164,36 @@ export default function PackagesPage() {
   }
 
   return (
-    <section className="container mx-auto px-5 lg:px-0">
+    <section className="container mx-auto px-5 lg:px-0 py-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Packages</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage your service packages
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            Packages
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1.5">
+            Manage your service packages and offerings
           </p>
         </div>
-        <Button className="w-full sm:w-auto">Add New Package</Button>
+        <Button className="w-full sm:w-auto shadow-sm">
+          Add New Package
+        </Button>
       </div>
 
       {/* Table */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden border shadow-sm p-0">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-muted/50">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  className="hover:bg-transparent"
+                >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="whitespace-nowrap"
+                      className="h-11 px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider"
                     >
                       {header.isPlaceholder
                         ? null
@@ -180,14 +208,14 @@ export default function PackagesPage() {
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map((row, index) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="hover:bg-muted/50"
+                    className="hover:bg-muted/50 transition-colors group border-b last:border-0"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-4">
+                      <TableCell key={cell.id} className="px-6 py-5">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -200,9 +228,24 @@ export default function PackagesPage() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-60 text-center"
                   >
-                    No packages found.
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                        <span className="text-2xl">📦</span>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">
+                          No packages found
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Get started by creating your first package
+                        </p>
+                      </div>
+                      <Button variant="outline" className="mt-2">
+                        Create Package
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
@@ -210,13 +253,6 @@ export default function PackagesPage() {
           </Table>
         </div>
       </Card>
-
-      {/* Mobile-friendly card view (visible only on small screens) */}
-      <div className="mt-4 block md:hidden">
-        <p className="text-sm text-muted-foreground text-center">
-          Scroll horizontally to see all columns
-        </p>
-      </div>
     </section>
   );
 }
