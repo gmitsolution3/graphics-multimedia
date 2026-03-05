@@ -36,12 +36,11 @@ import { IService } from "@/types";
 import { formatDate } from "@/utils";
 import Swal from "sweetalert2";
 import Link from "next/link";
+import ServicesTableLoader from "./../../../../components/loaders/ServiceTableLoader";
 
 export default function ServicesPage() {
   const { data, isLoading } = useGetServices();
   const services: IService[] = data?.data || [];
-
-  console.log(services)
 
   const { deleteItem } = useDelete("/services");
 
@@ -133,7 +132,7 @@ export default function ServicesPage() {
   });
 
   if (isLoading) {
-    return <PackageTableLoader />;
+    return <ServicesTableLoader />;
   }
 
   return (
@@ -194,7 +193,9 @@ export default function ServicesPage() {
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          style={{ width: `${cell.column.getSize()}%` }}
+                          style={{
+                            width: `${cell.column.getSize()}%`,
+                          }}
                           className="px-6 py-5"
                         >
                           {flexRender(
