@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useGetServices } from "@/hooks/swr/useGetServices";
 import { useDelete } from "@/hooks/swr/useDelete";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import {
@@ -17,22 +15,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,12 +30,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal, Star } from "lucide-react";
+import { MoreHorizontal, PackageX, PlusCircle } from "lucide-react";
 
 import { IService } from "@/types";
 import { formatDate } from "@/utils";
 import Swal from "sweetalert2";
-import Link from "next/link";
 import ServicesTableLoader from "@/components/loaders/ServiceTableLoader";
 import AdminServiceAddModal from "@/components/modals/AdminServiceAddModal";
 import AdminServiceEditModal from "@/components/modals/AdminServiceEditModal";
@@ -260,26 +241,22 @@ export default function ServicesPage() {
                       colSpan={columns.length}
                       className="h-60 text-center"
                     >
-                      <div className="flex flex-col items-center justify-center gap-3">
-                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                          <span className="text-2xl">📦</span>
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-lg">
-                            No Services found
-                          </h3>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Get started by creating your first service
-                          </p>
-                        </div>
+                      <div className="text-center py-12 px-4 rounded-lg">
+                        <PackageX className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          No Services Available
+                        </h3>
+                        <p className="text-gray-600 mb-6">
+                          You need to create at least one service
+                          before creating a package.
+                        </p>
                         <Button
-                          variant="outline"
-                          className="mt-2"
                           onClick={() => {
                             setIsAddModalOpen(true);
                           }}
                         >
-                          Create Service
+                          <PlusCircle className="h-4 w-4 mr-2" />
+                          Create New Service
                         </Button>
                       </div>
                     </TableCell>
