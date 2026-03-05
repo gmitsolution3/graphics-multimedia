@@ -23,6 +23,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { IService } from "@/types";
+import { usePatch } from "@/hooks/swr/usePatch";
+import { Loader2 } from "lucide-react";
+import { notify } from "./../../utils/toast";
 
 const serviceFormSchema = z.object({
   name: z
@@ -44,6 +47,8 @@ export default function AdminServiceEditModal({
   isEditModalOpen,
   setIsEditModalOpen,
 }: IModalProps) {
+  const { updateItem, isUpdating } = usePatch("/services");
+
   const editForm = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
@@ -51,11 +56,25 @@ export default function AdminServiceEditModal({
     },
   });
 
-  const onEditSubmit = (values: ServiceFormValues) => {
-    console.log("Edited Service Name:", values.name);
-    // You can add your update logic here
-    setIsEditModalOpen(false);
-    editForm.reset();
+  const onEditSubmit = async (values: ServiceFormValues) => {
+    try {
+      const serviceName = values.name;
+
+      const res = await updateItem({
+        id: selectedService?._id as string,
+        data: {
+          name: serviceName,
+        },
+      });
+
+      if (res.success) {
+        notify.success(res.message);
+        setIsEditModalOpen(false);
+        editForm.reset();
+      }
+    } catch (error: any) {
+      notify.error(error.message || "Something went wrong!");
+    }
   };
 
   useEffect(() => {
@@ -107,7 +126,13 @@ export default function AdminServiceEditModal({
               >
                 Cancel
               </Button>
-              <Button type="submit">Submit</Button>
+              <Button type="submit">
+                {isUpdating ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Submit"
+                )}
+              </Button>
             </div>
           </form>
         </Form>

@@ -17,11 +17,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
 import { useEffect, Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { usePost } from "@/hooks/swr/usePost";
+import { notify } from "@/utils/toast";
 
 const serviceFormSchema = z.object({
   name: z
@@ -41,6 +44,8 @@ export default function AdminServiceAddModal({
   isAddModalOpen,
   setIsAddModalOpen,
 }: IModalProps) {
+  const { createItem, isCreating } = usePost("/services");
+
   const addForm = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
@@ -48,11 +53,23 @@ export default function AdminServiceAddModal({
     },
   });
 
-  const onAddSubmit = (values: ServiceFormValues) => {
-    console.log("New Service Name:", values.name);
-    // You can add your create logic here
-    setIsAddModalOpen(false);
-    addForm.reset();
+  const onAddSubmit = async (values: ServiceFormValues) => {
+    try {
+      const serviceName = values.name;
+
+      const res = await createItem({
+        name: serviceName,
+      });
+
+      if (res.success) {
+        notify.success(res.message);
+
+        setIsAddModalOpen(false);
+        addForm.reset();
+      }
+    } catch (error: any) {
+      notify.error(error.message || "Something went wrong!");
+    }
   };
 
   useEffect(() => {
@@ -102,7 +119,13 @@ export default function AdminServiceAddModal({
               >
                 Cancel
               </Button>
-              <Button type="submit">Submit</Button>
+              <Button disabled={isCreating} type="submit">
+                {isCreating ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Submit"
+                )}
+              </Button>
             </div>
           </form>
         </Form>

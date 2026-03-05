@@ -76,7 +76,7 @@ export default function ServicesPage() {
   const [selectedService, setSelectedService] =
     useState<IService | null>(null);
 
-  const { deleteItem } = useDelete("/services");
+  const { deleteItem, revalidate } = useDelete("/services");
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -91,14 +91,14 @@ export default function ServicesPage() {
       if (result.isConfirmed) {
         const res = await deleteItem(id);
 
-        console.log(id);
-
         if (res.success) {
           Swal.fire({
             title: "Deleted!",
             text: res.message,
             icon: "success",
           });
+
+          revalidate();
         }
       }
     });
@@ -155,7 +155,7 @@ export default function ServicesPage() {
               <DropdownMenuItem
                 onClick={() => handleEditClick(row.original)}
               >
-                Edit package
+                Edit service
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(row.original._id)}
