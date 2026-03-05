@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useGetServices } from "@/hooks/swr/useGetServices";
 import { useDelete } from "@/hooks/swr/useDelete";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import {
   Table,
@@ -14,7 +17,22 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import PackageTableLoader from "@/components/loaders/PackageTableLoader";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,11 +54,27 @@ import { IService } from "@/types";
 import { formatDate } from "@/utils";
 import Swal from "sweetalert2";
 import Link from "next/link";
-import ServicesTableLoader from "./../../../../components/loaders/ServiceTableLoader";
+import ServicesTableLoader from "@/components/loaders/ServiceTableLoader";
+import AdminServiceAddModal from "@/components/modals/AdminServiceAddModal";
+import AdminServiceEditModal from "@/components/modals/AdminServiceEditModal";
+
+// Define validation schemas
+const serviceFormSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Service name is required")
+    .max(100, "Service name must be less than 100 characters"),
+});
+
+type ServiceFormValues = z.infer<typeof serviceFormSchema>;
 
 export default function ServicesPage() {
   const { data, isLoading } = useGetServices();
   const services: IService[] = data?.data || [];
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedService, setSelectedService] =
+    useState<IService | null>(null);
 
   const { deleteItem } = useDelete("/services");
 
@@ -57,6 +91,8 @@ export default function ServicesPage() {
       if (result.isConfirmed) {
         const res = await deleteItem(id);
 
+        console.log(id);
+
         if (res.success) {
           Swal.fire({
             title: "Deleted!",
@@ -66,6 +102,11 @@ export default function ServicesPage() {
         }
       }
     });
+  };
+
+  const handleEditClick = (service: IService) => {
+    setSelectedService(service);
+    setIsEditModalOpen(true);
   };
 
   const columns: ColumnDef<IService>[] = [
@@ -111,7 +152,11 @@ export default function ServicesPage() {
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit package</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleEditClick(row.original)}
+              >
+                Edit package
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(row.original._id)}
                 className="text-destructive"
@@ -148,10 +193,13 @@ export default function ServicesPage() {
               Manage your services and offerings
             </p>
           </div>
-          <Button asChild className="w-full sm:w-auto shadow-sm">
-            <Link href="/admin-dashboard/packages/add-new">
-              Add New Service
-            </Link>
+          <Button
+            className="w-full sm:w-auto shadow-sm"
+            onClick={() => {
+              setIsAddModalOpen(true);
+            }}
+          >
+            Add New Service
           </Button>
         </div>
 
@@ -221,11 +269,17 @@ export default function ServicesPage() {
                             No Services found
                           </h3>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Get started by creating your first package
+                            Get started by creating your first service
                           </p>
                         </div>
-                        <Button variant="outline" className="mt-2">
-                          Create Package
+                        <Button
+                          variant="outline"
+                          className="mt-2"
+                          onClick={() => {
+                            setIsAddModalOpen(true);
+                          }}
+                        >
+                          Create Service
                         </Button>
                       </div>
                     </TableCell>
@@ -236,6 +290,19 @@ export default function ServicesPage() {
           </div>
         </Card>
       </section>
+
+      {/* Edit Service Modal */}
+      <AdminServiceEditModal
+        selectedService={selectedService}
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
+      />
+
+      {/* Add New Service Modal */}
+      <AdminServiceAddModal
+        isAddModalOpen={isAddModalOpen}
+        setIsAddModalOpen={setIsAddModalOpen}
+      />
     </>
   );
 }

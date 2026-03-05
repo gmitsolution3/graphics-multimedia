@@ -12,7 +12,7 @@ import { formatPrice, formatDate } from "@/utils";
 import { Calendar, Check, X, FileText, Star } from "lucide-react";
 import { IPackage, IPackageService } from "@/types";
 
-interface IProps {
+interface IModalProps {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   selectedPackage: IPackage | null;
@@ -22,7 +22,7 @@ export default function AdminPackageDetailModal({
   isModalOpen,
   setIsModalOpen,
   selectedPackage,
-}: IProps) {
+}: IModalProps) {
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
