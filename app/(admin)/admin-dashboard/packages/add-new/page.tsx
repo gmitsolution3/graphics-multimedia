@@ -37,20 +37,16 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, PlusCircle, PackageX } from "lucide-react";
-
-// Skeleton component for loading state
-const ServiceSkeleton = () => (
-  <div className="flex flex-row items-center space-x-3 p-4 border rounded-lg animate-pulse">
-    <div className="h-4 w-4 bg-gray-200 rounded" />
-    <div className="flex-1 h-4 bg-gray-200 rounded" />
-    <div className="h-6 w-20 bg-gray-200 rounded-full" />
-  </div>
-);
+import { usePost } from "@/hooks/swr/usePost";
+import PackageServiceSkeleton from "./../../../../../components/loaders/PackageServiceSkeleton";
+import { notify } from "./../../../../../utils/toast";
 
 const packageFormSchema = z.object({
   name: z.string().min(1, "Name is required").trim(),
   description: z.string().min(1, "Description is required"),
-  price: z.number().min(0, "Price must be greater than or equal to 0"),
+  price: z
+    .number()
+    .min(0, "Price must be greater than or equal to 0"),
   period: z.string().min(1, "Period is required"),
   services: z
     .array(
@@ -68,6 +64,8 @@ type PackageFormData = z.infer<typeof packageFormSchema>;
 
 export default function AddNewPackagePage() {
   const { data, isLoading: isServicesLoading } = useGetServices();
+  const { createItem, isCreating } = usePost("/packages");
+
   const router = useRouter();
 
   const services = data?.data || [];
@@ -107,19 +105,25 @@ export default function AddNewPackagePage() {
 
   const onSubmit = async (data: PackageFormData) => {
     try {
-      console.log("Form Data:", data);
-      // Here you would make your API call to save the package
-      // await fetch('/api/packages', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // });
+      const res = await createItem(data);
 
-      alert("Package created successfully!");
-      // router.push("/packages");
-    } catch (error) {
-      console.error("Error creating package:", error);
-      alert("Failed to create package. Please try again.");
+      if (res.success) {
+        notify.success(res.message);
+
+        form.reset({
+          name: "",
+          description: "",
+          price: 0,
+          period: "monthly",
+          services: [],
+          cta: "Get Started",
+          popular: false,
+        });
+
+        router.push("/admin-dashboard/packages");
+      }
+    } catch (error: any) {
+      notify.error(error.message);
     }
   };
 
@@ -319,7 +323,8 @@ export default function AddNewPackagePage() {
                 <div>
                   <CardTitle>Services Included</CardTitle>
                   <CardDescription>
-                    Select which services are included in this package.
+                    Select which services are included in this
+                    package.
                   </CardDescription>
                 </div>
                 {!isServicesLoading && services.length > 0 && (
@@ -335,7 +340,7 @@ export default function AddNewPackagePage() {
                 {isServicesLoading && (
                   <div className="space-y-3">
                     {[...Array(5)].map((_, i) => (
-                      <ServiceSkeleton key={i} />
+                      <PackageServiceSkeleton key={i} />
                     ))}
                   </div>
                 )}
@@ -348,7 +353,8 @@ export default function AddNewPackagePage() {
                       No Services Available
                     </h3>
                     <p className="text-gray-600 mb-6">
-                      You need to create at least one service before creating a package.
+                      You need to create at least one service before
+                      creating a package.
                     </p>
                     <Link href="/admin-dashboard/services">
                       <Button>
@@ -377,7 +383,9 @@ export default function AddNewPackagePage() {
                               <FormControl>
                                 <Checkbox
                                   checked={checkboxField.value}
-                                  onCheckedChange={checkboxField.onChange}
+                                  onCheckedChange={
+                                    checkboxField.onChange
+                                  }
                                 />
                               </FormControl>
                               <FormLabel className="flex-1 font-medium cursor-pointer">
@@ -427,7 +435,9 @@ export default function AddNewPackagePage() {
             </Button>
             <Button
               type="submit"
-              disabled={form.formState.isSubmitting || services.length === 0}
+              disabled={
+                form.formState.isSubmitting || services.length === 0
+              }
               className="min-w-[120px]"
             >
               {form.formState.isSubmitting ? (

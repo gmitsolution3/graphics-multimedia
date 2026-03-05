@@ -39,18 +39,9 @@ import ServicesTableLoader from "@/components/loaders/ServiceTableLoader";
 import AdminServiceAddModal from "@/components/modals/AdminServiceAddModal";
 import AdminServiceEditModal from "@/components/modals/AdminServiceEditModal";
 
-// Define validation schemas
-const serviceFormSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Service name is required")
-    .max(100, "Service name must be less than 100 characters"),
-});
-
-type ServiceFormValues = z.infer<typeof serviceFormSchema>;
-
 export default function ServicesPage() {
   const { data, isLoading } = useGetServices();
+  
   const services: IService[] = data?.data || [];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
