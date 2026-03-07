@@ -33,6 +33,8 @@ export async function POST(req: Request) {
 
     const payload = await req.json();
 
+    console.log(payload)
+
     if (!payload.name) {
       return NextResponse.json(
         { success: false, message: "Name is required" },
@@ -40,9 +42,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const service = await Service.create({
-      name: payload.name,
-    });
+    const service = await Service.create(payload);
 
     return NextResponse.json(
       {

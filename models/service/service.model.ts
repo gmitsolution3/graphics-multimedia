@@ -9,6 +9,10 @@ const ServiceSchema = new Schema<IService>(
       trim: true,
       unique: true,
     },
+    price: {
+      type: Number,
+      required: true,
+    },
   },
   { strict: true, timestamps: true, versionKey: false },
 );

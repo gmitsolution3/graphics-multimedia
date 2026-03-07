@@ -31,6 +31,10 @@ const serviceFormSchema = z.object({
     .string()
     .min(1, "Service name is required")
     .max(100, "Service name must be less than 100 characters"),
+  price: z
+    .number()
+    .min(1, "Price must be greater than 0")
+    .max(999999.99, "Price must be less than 1,000,000"),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -50,15 +54,18 @@ export default function AdminServiceAddModal({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       name: "",
+      price: 0,
     },
   });
 
   const onAddSubmit = async (values: ServiceFormValues) => {
     try {
       const serviceName = values.name;
+      const servicePrice = values.price;
 
       const res = await createItem({
         name: serviceName,
+        price: servicePrice,
       });
 
       if (res.success) {
@@ -82,7 +89,7 @@ export default function AdminServiceAddModal({
         <DialogHeader>
           <DialogTitle>Add New Service</DialogTitle>
           <DialogDescription>
-            Enter the service name below. Click submit when you're
+            Enter the service details below. Click submit when you're
             done.
           </DialogDescription>
         </DialogHeader>
@@ -102,6 +109,29 @@ export default function AdminServiceAddModal({
                       placeholder="Enter service name"
                       autoFocus
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={addForm.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Enter price"
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value === "" ? 0 : parseFloat(e.target.value);
+                        field.onChange(value);
+                      }}
+                      value={field.value}
                     />
                   </FormControl>
                   <FormMessage />

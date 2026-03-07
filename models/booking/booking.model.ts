@@ -39,7 +39,9 @@ const BookingSchema = new Schema<IBooking>(
     },
   },
   {
+    strict: true,
     timestamps: true,
+    versionKey: false,
   },
 );
 

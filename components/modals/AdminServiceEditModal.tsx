@@ -32,6 +32,10 @@ const serviceFormSchema = z.object({
     .string()
     .min(1, "Service name is required")
     .max(100, "Service name must be less than 100 characters"),
+  price: z
+    .number()
+    .min(0, "Price must be greater than or equal to 0")
+    .max(999999.99, "Price must be less than 1,000,000"),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -53,17 +57,20 @@ export default function AdminServiceEditModal({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       name: "",
+      price: 0,
     },
   });
 
   const onEditSubmit = async (values: ServiceFormValues) => {
     try {
       const serviceName = values.name;
+      const servicePrice = values.price;
 
       const res = await updateItem({
         id: selectedService?._id as string,
         data: {
           name: serviceName,
+          price: servicePrice,
         },
       });
 
@@ -80,8 +87,9 @@ export default function AdminServiceEditModal({
   useEffect(() => {
     editForm.reset({
       name: selectedService?.name,
+      price: selectedService?.price || 0,
     });
-  }, [isEditModalOpen]);
+  }, [isEditModalOpen, selectedService]);
 
   return (
     <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
@@ -89,7 +97,7 @@ export default function AdminServiceEditModal({
         <DialogHeader>
           <DialogTitle>Edit Service</DialogTitle>
           <DialogDescription>
-            Update the service name below. Click submit when you're
+            Update the service details below. Click submit when you're
             done.
           </DialogDescription>
         </DialogHeader>
@@ -115,6 +123,30 @@ export default function AdminServiceEditModal({
                 </FormItem>
               )}
             />
+            <FormField
+              control={editForm.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="Enter price"
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value === "" ? 0 : parseFloat(e.target.value);
+                        field.onChange(value);
+                      }}
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="flex justify-end gap-3 pt-4">
               <Button
                 type="button"
@@ -126,7 +158,7 @@ export default function AdminServiceEditModal({
               >
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" disabled={isUpdating}>
                 {isUpdating ? (
                   <Loader2 className="animate-spin" />
                 ) : (

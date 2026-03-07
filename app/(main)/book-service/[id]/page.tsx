@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { use } from "react";
 import { Check, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import { useGetById } from "@/hooks/swr/useGetById";
 import { IPackageService } from "@/types";
 import SelectedPackageLoader from "@/components/loaders/SelectedPackageLoader";
 import BookingForm from "@/components/BookingForm";
-import { BookingFormValues } from "@/components/BookingForm";
 
 interface IParams {
   params: Promise<{ id: string }>;

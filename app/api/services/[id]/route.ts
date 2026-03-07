@@ -62,11 +62,10 @@ export async function PATCH(
       );
     }
 
-    const updated = await Service.findByIdAndUpdate(
-      id,
-      { name: body.name },
-      { new: true, runValidators: true },
-    );
+    const updated = await Service.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updated) {
       return NextResponse.json(

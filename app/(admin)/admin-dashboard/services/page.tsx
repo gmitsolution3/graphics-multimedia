@@ -33,7 +33,7 @@ import {
 import { MoreHorizontal, PackageX, PlusCircle } from "lucide-react";
 
 import { IService } from "@/types";
-import { formatDate } from "@/utils";
+import { formatDate, formatPrice } from "@/utils";
 import Swal from "sweetalert2";
 import ServicesTableLoader from "@/components/loaders/ServiceTableLoader";
 import AdminServiceAddModal from "@/components/modals/AdminServiceAddModal";
@@ -85,7 +85,7 @@ export default function ServicesPage() {
     {
       accessorKey: "name",
       header: () => <div className="text-left">Name</div>,
-      size: Math.floor(100 / 3), // Equal space for 3 columns
+      size: 25,
       cell: ({ row }) => (
         <div>
           <div className="font-semibold text-lg">
@@ -95,9 +95,21 @@ export default function ServicesPage() {
       ),
     },
     {
+      accessorKey: "price",
+      header: "Price",
+      size: 20,
+      cell: ({ row }) => (
+        <div>
+          <div className="font-semibold text-lg">
+            {formatPrice(row.getValue("price"))}
+          </div>
+        </div>
+      ),
+    },
+    {
       accessorKey: "createdAt",
       header: "Created",
-      size: Math.floor(100 / 3), // Equal space for 3 columns
+      size: 40,
       cell: ({ row }) => (
         <div>
           <div className="text-sm font-medium">
@@ -112,7 +124,7 @@ export default function ServicesPage() {
     {
       id: "actions",
       header: "Action",
-      size: Math.floor(100 / 5), // Equal space for 3 columns
+      size: 15,
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <DropdownMenu>
