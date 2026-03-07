@@ -101,9 +101,7 @@ export default async function RegularPackagePage() {
                         : "border-border/60 hover:border-primary/30"
                     } text-foreground uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500`}
                   >
-                    <Link
-                      href={`/book-service/${packageItem.name.toLowerCase()}`}
-                    >
+                    <Link href={`/book-service/${packageItem._id}`}>
                       <span className="relative z-10 flex items-center justify-center gap-2">
                         {packageItem.cta}
                         <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
