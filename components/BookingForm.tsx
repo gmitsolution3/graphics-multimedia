@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Check,
   Mail,
   Phone,
   User,
@@ -13,8 +12,12 @@ import {
   Send,
   RefreshCw,
 } from "lucide-react";
-
 import { Button } from "./ui/button";
+import { IPackage } from "@/types";
+import { usePost } from "@/hooks/swr/usePost";
+import { notify } from "@/utils/toast";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export const bookingFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -29,17 +32,11 @@ export const bookingFormSchema = z.object({
 export type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
 interface BookingFormProps {
-  selectedPlan: any;
-  isSubmitting: boolean;
-  setIsSubmitting: (value: boolean) => void;
-  onSubmit: (data: BookingFormValues) => Promise<void>;
+  selectedPackage: IPackage;
 }
 
 export default function BookingForm({
-  selectedPlan,
-  isSubmitting,
-  setIsSubmitting,
-  onSubmit,
+  selectedPackage,
 }: BookingFormProps) {
   const {
     register,
@@ -57,15 +54,36 @@ export default function BookingForm({
     },
   });
 
+  const router = useRouter();
+
+  const { createItem, isCreating } = usePost("/bookings");
+
   const onFormSubmit = async (data: BookingFormValues) => {
-    setIsSubmitting(true);
     try {
-      await onSubmit(data);
-      reset();
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
+      const res = await createItem({
+        ...data,
+        selectedPackage: selectedPackage._id,
+      });
+
+      if (res.success) {
+        Swal.fire({
+          title: "Awesome",
+          text: res.message,
+          icon: "success",
+        });
+      }
+
+      reset({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        projectDetails: "",
+      });
+
+      router.push("/");
+    } catch (error: any) {
+      notify.error(error.message);
     }
   };
 
@@ -83,7 +101,7 @@ export default function BookingForm({
         <input
           type="text"
           id="name"
-          disabled={isSubmitting}
+          disabled={isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="John Doe"
           {...register("name")}
@@ -107,7 +125,7 @@ export default function BookingForm({
         <input
           type="email"
           id="email"
-          disabled={isSubmitting}
+          disabled={isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="john@example.com"
           {...register("email")}
@@ -131,7 +149,7 @@ export default function BookingForm({
         <input
           type="tel"
           id="phone"
-          disabled={isSubmitting}
+          disabled={isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="+1 (555) 123-4567"
           {...register("phone")}
@@ -155,7 +173,7 @@ export default function BookingForm({
         <input
           type="text"
           id="company"
-          disabled={isSubmitting}
+          disabled={isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="Your Company LLC"
           {...register("company")}
@@ -179,7 +197,7 @@ export default function BookingForm({
         <textarea
           id="projectDetails"
           rows={4}
-          disabled={isSubmitting}
+          disabled={isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none resize-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="Tell us about your project goals and requirements..."
           {...register("projectDetails")}
@@ -196,11 +214,11 @@ export default function BookingForm({
         <div className="pt-4">
           <Button
             type="submit"
-            disabled={!selectedPlan || isSubmitting}
+            disabled={!selectedPackage || isCreating}
             className="relative overflow-hidden group w-full bg-transparent border border-border/60 hover:border-primary/50 text-foreground uppercase text-xs tracking-[0.2em] px-8 py-6 rounded-none transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed hover:text-white"
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
-              {isSubmitting ? (
+              {isCreating ? (
                 <>
                   <RefreshCw className="w-3 h-3 animate-spin" />
                   Submitting...

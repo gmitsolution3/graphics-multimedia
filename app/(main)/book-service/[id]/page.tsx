@@ -17,21 +17,8 @@ interface IParams {
 export default function BookServicePage({ params }: IParams) {
   const { id } = use(params);
   const { data, isLoading, error } = useGetById("/packages", id);
+
   const selectedPlan = data?.data || {};
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleFormSubmit = async (formData: BookingFormValues) => {
-    // Simulate API call - replace with actual API
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    console.log({
-      ...formData,
-      selectedPlan,
-    });
-
-    // Success handling
-    alert("Request submitted successfully!");
-  };
 
   return (
     <section className="py-20 lg:py-28 bg-card min-h-screen relative">
@@ -56,12 +43,7 @@ export default function BookServicePage({ params }: IParams) {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Left Column - Form */}
             <div>
-              <BookingForm
-                selectedPlan={selectedPlan}
-                isSubmitting={isSubmitting}
-                setIsSubmitting={setIsSubmitting}
-                onSubmit={handleFormSubmit}
-              />
+              <BookingForm selectedPackage={selectedPlan} />
             </div>
 
             {/* Right Column - Package Details */}

@@ -6,7 +6,7 @@ export interface IBooking extends Document {
   phone: string;
   company?: string;
   projectDetails: string;
-  selectedPlan: Types.ObjectId;
+  selectedPackage: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }

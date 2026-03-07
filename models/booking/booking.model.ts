@@ -32,7 +32,7 @@ const BookingSchema = new Schema<IBooking>(
       required: true,
     },
 
-    selectedPlan: {
+    selectedPackage: {
       type: Schema.Types.ObjectId,
       ref: "Package",
       required: true,
