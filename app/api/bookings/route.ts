@@ -20,7 +20,6 @@ export async function POST(req: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         success: false,
@@ -36,8 +35,8 @@ export async function GET() {
   try {
     await connectDB();
 
-    const bookings = await Booking.find()
-      .populate("selectedPlan")
+    const bookings = await Booking.find({})
+      .populate("selectedPackage")
       .sort({ createdAt: -1 });
 
     return NextResponse.json({
@@ -45,6 +44,7 @@ export async function GET() {
       data: bookings,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         success: false,

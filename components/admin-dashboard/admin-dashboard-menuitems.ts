@@ -4,6 +4,7 @@ import {
   Settings,
   UserCircle,
   Box,
+  BookCheck,
 } from "lucide-react";
 
 export const mainMenuItems = [
@@ -21,6 +22,11 @@ export const mainMenuItems = [
     title: "Packages",
     url: "/admin-dashboard/packages",
     icon: FileSpreadsheet,
+  },
+  {
+    title: "Bookings",
+    url: "/admin-dashboard/bookings/regular",
+    icon: BookCheck,
   },
 ];
 
