@@ -190,7 +190,11 @@ export default function PackagesPage() {
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit package</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href={`/admin-dashboard/packages/edit/${row.original._id}`}>
+                  Edit package
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(row.original._id)}
                 className="text-destructive"
