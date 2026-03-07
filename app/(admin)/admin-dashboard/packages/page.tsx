@@ -191,7 +191,9 @@ export default function PackagesPage() {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link href={`/admin-dashboard/packages/edit/${row.original._id}`}>
+                <Link
+                  href={`/admin-dashboard/packages/edit/${row.original._id}`}
+                >
                   Edit package
                 </Link>
               </DropdownMenuItem>
@@ -305,8 +307,14 @@ export default function PackagesPage() {
                             Get started by creating your first package
                           </p>
                         </div>
-                        <Button variant="outline" className="mt-2">
-                          Create Package
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="mt-2"
+                        >
+                          <Link href="/admin-dashboard/packages/add-new">
+                            Create Package
+                          </Link>
                         </Button>
                       </div>
                     </TableCell>

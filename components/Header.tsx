@@ -8,9 +8,9 @@ import Logo from "@/assets/logo.png";
 import Image from "next/image";
 
 const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
+  { label: "Home", href: "home" },
+  { label: "Services", href: "/#services" },
+  { label: "About", href: "/#about" },
   { 
     label: "Packages", 
     href: "#packages",
@@ -19,10 +19,10 @@ const navItems = [
       { label: "Custom Packages", href: "/packages/custom" }
     ]
   },
-  { label: "Team", href: "#team" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
+  { label: "Team", href: "/#team" },
+  { label: "Portfolio", href: "/#portfolio" },
+  { label: "Testimonials", href: "/#testimonials" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const FacebookIcon = () => (

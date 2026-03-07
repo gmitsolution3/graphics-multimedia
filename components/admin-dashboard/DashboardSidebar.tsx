@@ -22,11 +22,11 @@ import {
 import { LogOut } from "lucide-react";
 
 import Image from "next/image";
+import Link from "next/link";
 import Logo from "@/assets/logo.png";
 
 import {
   mainMenuItems,
-  managementItems,
   settingsItems,
 } from "./admin-dashboard-menuitems";
 
@@ -40,14 +40,16 @@ export function DashboardSidebar() {
       className="border-r border-sidebar-border"
     >
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3 text-center">
-          <Image
-            height={300}
-            width={300}
-            src={Logo}
-            alt="Logo"
-            className="w-18 mx-auto"
-          />
+        <div className="flex justify-center items-center gap-3 text-center">
+          <Link className="block" href="/">
+            <Image
+              height={300}
+              width={300}
+              src={Logo}
+              alt="Logo"
+              className="w-18 mx-auto"
+            />
+          </Link>
         </div>
       </SidebarHeader>
 
@@ -66,30 +68,6 @@ export function DashboardSidebar() {
                       exact={item.url === "/admin-dashboard"}
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                       activeClassName="bg-primary/10 text-primary font-medium"
-                    >
-                      <item.icon className="h-5 w-5 shrink-0" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup className="mt-4">
-          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {!isCollapsed && "Management"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {managementItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink
-                      href={item.url}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
                       <item.icon className="h-5 w-5 shrink-0" />
                       {!isCollapsed && <span>{item.title}</span>}
