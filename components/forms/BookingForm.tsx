@@ -12,7 +12,7 @@ import {
   Send,
   RefreshCw,
 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { IPackage } from "@/types";
 import { usePost } from "@/hooks/swr/usePost";
 import { notify } from "@/utils/toast";
@@ -32,10 +32,12 @@ export const bookingFormSchema = z.object({
 export type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
 interface BookingFormProps {
+  isLoading: boolean;
   selectedPackage: IPackage;
 }
 
 export default function BookingForm({
+  isLoading,
   selectedPackage,
 }: BookingFormProps) {
   const {
@@ -101,7 +103,7 @@ export default function BookingForm({
         <input
           type="text"
           id="name"
-          disabled={isCreating}
+          disabled={isLoading || isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="John Doe"
           {...register("name")}
@@ -125,7 +127,13 @@ export default function BookingForm({
         <input
           type="email"
           id="email"
-          disabled={isCreating}
+          disabled={
+            isLoading ||
+            isLoading ||
+            isLoading ||
+            isLoading ||
+            isCreating
+          }
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="john@example.com"
           {...register("email")}
@@ -149,7 +157,7 @@ export default function BookingForm({
         <input
           type="tel"
           id="phone"
-          disabled={isCreating}
+          disabled={isLoading || isLoading || isLoading || isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="+1 (555) 123-4567"
           {...register("phone")}
@@ -173,7 +181,7 @@ export default function BookingForm({
         <input
           type="text"
           id="company"
-          disabled={isCreating}
+          disabled={isLoading || isLoading || isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="Your Company LLC"
           {...register("company")}
@@ -197,7 +205,7 @@ export default function BookingForm({
         <textarea
           id="projectDetails"
           rows={4}
-          disabled={isCreating}
+          disabled={isLoading || isCreating}
           className="w-full bg-transparent border-b border-primary/60 py-3 text-sm opacity-80 focus:opacity-100 focus:border-primary/60 outline-none resize-none transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
           placeholder="Tell us about your project goals and requirements..."
           {...register("projectDetails")}
@@ -214,7 +222,7 @@ export default function BookingForm({
         <div className="pt-4">
           <Button
             type="submit"
-            disabled={!selectedPackage || isCreating}
+            disabled={!selectedPackage || isLoading || isCreating}
             className="relative overflow-hidden group w-full bg-transparent border border-border/60 hover:border-primary/50 text-foreground uppercase text-xs tracking-[0.2em] px-8 py-6 rounded-none transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed hover:text-white"
           >
             <span className="relative z-10 flex items-center justify-center gap-2">

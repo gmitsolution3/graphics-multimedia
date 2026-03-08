@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 
 import { useEffect, Dispatch, SetStateAction } from "react";
@@ -36,6 +37,10 @@ const serviceFormSchema = z.object({
     .number()
     .min(0, "Price must be greater than or equal to 0")
     .max(999999.99, "Price must be less than 1,000,000"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(500, "Description must be less than 500 characters"),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -58,6 +63,7 @@ export default function AdminServiceEditModal({
     defaultValues: {
       name: "",
       price: 0,
+      description: "",
     },
   });
 
@@ -65,12 +71,14 @@ export default function AdminServiceEditModal({
     try {
       const serviceName = values.name;
       const servicePrice = values.price;
+      const serviceDescription = values.description;
 
       const res = await updateItem({
         id: selectedService?._id as string,
         data: {
           name: serviceName,
           price: servicePrice,
+          description: serviceDescription,
         },
       });
 
@@ -88,6 +96,7 @@ export default function AdminServiceEditModal({
     editForm.reset({
       name: selectedService?.name,
       price: selectedService?.price || 0,
+      description: selectedService?.description || "",
     });
   }, [isEditModalOpen, selectedService]);
 
@@ -141,6 +150,23 @@ export default function AdminServiceEditModal({
                         field.onChange(value);
                       }}
                       value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={editForm.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter service description"
+                      className="resize-none min-h-[100px]"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

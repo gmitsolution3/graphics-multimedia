@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -35,6 +36,10 @@ const serviceFormSchema = z.object({
     .number()
     .min(1, "Price must be greater than 0")
     .max(999999.99, "Price must be less than 1,000,000"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(500, "Description must be less than 500 characters"),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -55,6 +60,7 @@ export default function AdminServiceAddModal({
     defaultValues: {
       name: "",
       price: 0,
+      description: "",
     },
   });
 
@@ -62,10 +68,12 @@ export default function AdminServiceAddModal({
     try {
       const serviceName = values.name;
       const servicePrice = values.price;
+      const serviceDescription = values.description;
 
       const res = await createItem({
         name: serviceName,
         price: servicePrice,
+        description: serviceDescription,
       });
 
       if (res.success) {
@@ -132,6 +140,23 @@ export default function AdminServiceAddModal({
                         field.onChange(value);
                       }}
                       value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={addForm.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter service description"
+                      className="resize-none min-h-[100px]"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

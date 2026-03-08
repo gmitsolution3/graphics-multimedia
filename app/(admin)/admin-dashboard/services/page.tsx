@@ -85,7 +85,7 @@ export default function ServicesPage() {
     {
       accessorKey: "name",
       header: () => <div className="text-left">Name</div>,
-      size: 25,
+      size: 20,
       cell: ({ row }) => (
         <div>
           <div className="font-semibold text-lg">
@@ -97,7 +97,7 @@ export default function ServicesPage() {
     {
       accessorKey: "price",
       header: "Price",
-      size: 20,
+      size: 15,
       cell: ({ row }) => (
         <div>
           <div className="font-semibold text-lg">
@@ -107,9 +107,21 @@ export default function ServicesPage() {
       ),
     },
     {
+      accessorKey: "description",
+      header: "Description",
+      size: 30,
+      cell: ({ row }) => (
+        <div>
+          <div className="text-sm text-gray-600 line-clamp-2">
+            {row.getValue("description") || "No description provided"}
+          </div>
+        </div>
+      ),
+    },
+    {
       accessorKey: "createdAt",
       header: "Created",
-      size: 40,
+      size: 20,
       cell: ({ row }) => (
         <div>
           <div className="text-sm font-medium">

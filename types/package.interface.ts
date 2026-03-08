@@ -6,6 +6,7 @@ export interface IPackageService {
 export interface IService {
   _id: string;
   name: string;
+  description: string;
   price: number;
   createdAt: string;
 }

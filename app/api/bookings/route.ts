@@ -1,24 +1,44 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Booking from "@/models/booking/booking.model";
+import CustomPackage from "@/models/customPackage/customPackage.model";
 
 //? CREATE NEW BOOKING
 export async function POST(req: Request) {
   try {
     await connectDB();
 
-    const body = await req.json();
+    const payload = await req.json();
 
-    const booking = await Booking.create(body);
+    if (payload.packageType === "custom") {
+      const customPackageResponse = await CustomPackage.create(
+        payload.selectedPackage,
+      );
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Service Booked succesfully.",
-        data: booking,
-      },
-      { status: 201 },
-    );
+      payload.selectedPackage = customPackageResponse._id;
+
+      const booking = await Booking.create(payload);
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Service Booked succesfully.",
+          data: booking,
+        },
+        { status: 201 },
+      );
+    } else {
+      const booking = await Booking.create(payload);
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Service Booked succesfully.",
+          data: booking,
+        },
+        { status: 201 },
+      );
+    }
   } catch (error) {
     return NextResponse.json(
       {
@@ -44,7 +64,6 @@ export async function GET() {
       data: bookings,
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         success: false,

@@ -37,6 +37,13 @@ const BookingSchema = new Schema<IBooking>(
       ref: "Package",
       required: true,
     },
+
+    packageType: {
+      type: String,
+      required: true,
+      enum: ["regular", "custom"],
+      default: "regular",
+    },
   },
   {
     strict: true,
