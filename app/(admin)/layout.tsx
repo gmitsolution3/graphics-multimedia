@@ -5,6 +5,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/admin-dashboard/DashboardSidebar";
 import { DashboardHeader } from "@/components/admin-dashboard/DashboardHeader";
 
+import { requireAuth } from "@/lib/requireAuth";
+
 const PoppinsFont = Poppins({
   variable: "--font-poppins",
   weight: [
@@ -30,9 +32,12 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AdminDashboardLayout({
+export default async function AdminDashboardLayout({
   children,
 }: DashboardLayoutProps) {
+  
+  await requireAuth(["admin"]);
+
   return (
     <html lang="en">
       <body className={`${PoppinsFont.variable} antialiased`}>

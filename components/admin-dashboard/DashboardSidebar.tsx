@@ -30,9 +30,26 @@ import {
   settingsItems,
 } from "./admin-dashboard-menuitems";
 
+import { getSession, logOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
 export function DashboardSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+
+  const { data: session } = getSession();
+
+  const user = session?.user;
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const res = await logOut();
+
+    if (res?.data?.success) {
+      router.replace("/login");
+    }
+  };
 
   return (
     <Sidebar
@@ -115,15 +132,19 @@ export function DashboardSidebar() {
           {!isCollapsed && (
             <div className="flex flex-1 flex-col overflow-hidden">
               <span className="truncate text-sm font-medium text-sidebar-foreground">
-                Dr. Sarah Wilson
+                {user?.email}
               </span>
               <span className="truncate text-xs text-muted-foreground">
-                Cardiologist
+                {/* {user?.role} */}
+                Admin
               </span>
             </div>
           )}
           {!isCollapsed && (
-            <button className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+            <button
+              onClick={handleLogout}
+              className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            >
               <LogOut className="h-4 w-4" />
             </button>
           )}

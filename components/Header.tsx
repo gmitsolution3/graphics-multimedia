@@ -6,18 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Mail, ChevronDown } from "lucide-react";
 import Logo from "@/assets/logo.png";
 import Image from "next/image";
+import { getSession } from "@/lib/auth-client";
 
 const navItems = [
   { label: "Home", href: "home" },
   { label: "Services", href: "/#services" },
   { label: "About", href: "/#about" },
-  { 
-    label: "Packages", 
+  {
+    label: "Packages",
     href: "#packages",
     dropdown: [
       { label: "Regular Packages", href: "/packages/regular" },
-      { label: "Custom Packages", href: "/packages/custom" }
-    ]
+      { label: "Custom Packages", href: "/packages/custom" },
+    ],
   },
   { label: "Team", href: "/#team" },
   { label: "Portfolio", href: "/#portfolio" },
@@ -74,7 +75,10 @@ const socialLinks = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [packagesDropdownOpen, setPackagesDropdownOpen] = useState(false);
+  const [packagesDropdownOpen, setPackagesDropdownOpen] =
+    useState(false);
+
+  const { data: session } = getSession();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -132,13 +136,15 @@ export default function Header() {
                     key={item.href}
                     className="relative py-3"
                     onMouseEnter={() => setPackagesDropdownOpen(true)}
-                    onMouseLeave={() => setPackagesDropdownOpen(false)}
+                    onMouseLeave={() =>
+                      setPackagesDropdownOpen(false)
+                    }
                   >
-                    <button
-                      className="relative text-base tracking-wide opacity-60 hover:opacity-100 transition-opacity group flex items-center gap-1"
-                    >
+                    <button className="relative text-base tracking-wide opacity-60 hover:opacity-100 transition-opacity group flex items-center gap-1">
                       {item.label}
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${packagesDropdownOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${packagesDropdownOpen ? "rotate-180" : ""}`}
+                      />
                       <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
                     </button>
 
@@ -150,7 +156,9 @@ export default function Header() {
                             key={dropdownItem.href}
                             href={dropdownItem.href}
                             className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                            onClick={() => setPackagesDropdownOpen(false)}
+                            onClick={() =>
+                              setPackagesDropdownOpen(false)
+                            }
                           >
                             {dropdownItem.label}
                           </Link>
@@ -202,7 +210,10 @@ export default function Header() {
               {navItems.map((item) => {
                 if (item.dropdown) {
                   return (
-                    <div key={item.href} className="flex flex-col gap-2">
+                    <div
+                      key={item.href}
+                      className="flex flex-col gap-2"
+                    >
                       <div className="text-sm font-medium text-muted-foreground">
                         {item.label}
                       </div>
