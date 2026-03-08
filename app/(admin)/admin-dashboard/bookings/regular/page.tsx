@@ -1,4 +1,5 @@
 "use client";
+
 import { useGetBookings } from "@/hooks/swr/useGetBookings";
 import {
   Table,
@@ -31,15 +32,7 @@ import {
   Eye,
   MoreHorizontal,
   Package,
-  Phone,
-  User,
-  Mail,
-  Building2,
-  FileText,
-  Clock,
-  Tag,
-  CheckCircle2,
-  XCircle,
+  Phone
 } from "lucide-react";
 import { formatDate } from "@/utils";
 import { useState } from "react";
@@ -49,8 +42,9 @@ import BookingTableLoader from "@/components/loaders/BookingTableLoader";
 import AdminBookingDetailModal from "@/components/modals/AdminBookingDetailModal";
 
 export default function RegularBookingsPage() {
-  const { data, isLoading } = useGetBookings();
+  const { data, isLoading } = useGetBookings("regular");
   const bookings: IBooking[] = data?.data || [];
+
   const [selectedBooking, setSelectedBooking] =
     useState<IBooking | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +54,6 @@ export default function RegularBookingsPage() {
     setIsModalOpen(true);
   };
 
-  // Define table columns
   const columns: ColumnDef<IBooking>[] = [
     {
       accessorKey: "name",
@@ -212,7 +205,6 @@ export default function RegularBookingsPage() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // Loading state
   if (isLoading) {
     return <BookingTableLoader />;
   }
@@ -318,7 +310,6 @@ export default function RegularBookingsPage() {
         </Card>
       </section>
 
-      {/* Booking Details Modal */}
       <AdminBookingDetailModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}

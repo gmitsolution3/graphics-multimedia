@@ -7,7 +7,8 @@ export interface IBooking extends Document {
   company?: string;
   projectDetails: string;
   selectedPackage: Types.ObjectId;
-  packageType: string;
+  packageModel: string;
+  bookingType: string;
   createdAt: Date;
   updatedAt: Date;
 }

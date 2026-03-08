@@ -69,7 +69,8 @@ export default function CustomPackagePage() {
       company: formData.company,
       projectDetails: formData.projectDetails,
       selectedPackage: customPackageData,
-      packageType: "custom",
+      packageModel: "CustomPackage",
+      bookingType: "custom",
     };
 
     try {

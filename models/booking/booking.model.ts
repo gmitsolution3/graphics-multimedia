@@ -34,11 +34,18 @@ const BookingSchema = new Schema<IBooking>(
 
     selectedPackage: {
       type: Schema.Types.ObjectId,
-      ref: "Package",
       required: true,
+      refPath: "packageModel",
     },
 
-    packageType: {
+    packageModel: {
+      type: String,
+      required: true,
+      enum: ["Package", "CustomPackage"],
+      default: "Package",
+    },
+
+    bookingType: {
       type: String,
       required: true,
       enum: ["regular", "custom"],

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Booking from "@/models/booking/booking.model";
 import CustomPackage from "@/models/customPackage/customPackage.model";
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     const payload = await req.json();
 
-    if (payload.packageType === "custom") {
+    if (payload.bookingType === "custom") {
       const customPackageResponse = await CustomPackage.create(
         payload.selectedPackage,
       );
@@ -51,11 +51,13 @@ export async function POST(req: Request) {
 }
 
 //? GET BOOKING LIST
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const bookings = await Booking.find({})
+    const type = req.nextUrl.searchParams.get("type");
+
+    const bookings = await Booking.find({ bookingType: type })
       .populate("selectedPackage")
       .sort({ createdAt: -1 });
 
