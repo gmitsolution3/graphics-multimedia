@@ -4,6 +4,7 @@ import {
   Twitter,
   Instagram,
   Linkedin,
+  Youtube,
   Mail,
   Phone,
   MapPin,
@@ -13,31 +14,41 @@ import Image from "next/image";
 
 const footerLinks = {
   services: [
-    { label: "SEO Optimization", href: "#" },
-    { label: "PPC Advertising", href: "#" },
-    { label: "Social Media", href: "#" },
-    { label: "Content Strategy", href: "#" },
-    { label: "Web Development", href: "#" },
+    { label: "SEO Optimization", href: "/#services" },
+    { label: "PPC Advertising", href: "/#services" },
+    { label: "Social Media", href: "/#services" },
+    { label: "Content Strategy", href: "/#services" },
+    { label: "Web Development", href: "/#services" },
   ],
   company: [
-    { label: "About Us", href: "#about" },
-    { label: "Our Team", href: "#team" },
-    { label: "Careers", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "About Us", href: "/#about" },
+    { label: "Our Team", href: "/#team" },
+    { label: "Careers", href: "/carrier" },
+    { label: "Contact", href: "/#contact" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Cookie Policy", href: "#" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms-conditions" },
+    { label: "Cookie Policy", href: "/cookie-policy" },
   ],
 };
 
 const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
+  {
+    icon: Facebook,
+    href: "https://www.facebook.com/graphicsmultimedia.net",
+    label: "Facebook",
+  },
+  {
+    icon: Instagram,
+    href: "https://www.instagram.com/graphicsmultimedia1?igsh=bnZlMGZmNjk4MWR2",
+    label: "Instagram",
+  },
+  {
+    icon: Youtube,
+    href: "https://www.youtube.com/@graphicsMultimedia1122",
+    label: "Youtube",
+  },
 ];
 
 export default function Footer() {
@@ -67,15 +78,22 @@ export default function Footer() {
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-sm opacity-60 group hover:opacity-100 transition-opacity">
                 <Mail className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                <span>hello@nexusdigital.com</span>
+                <span>graphicsmultimedia.net</span>
               </div>
               <div className="flex items-center gap-3 text-sm opacity-60 group hover:opacity-100 transition-opacity">
                 <Phone className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                <span>+1 (555) 123-4567</span>
+                <div>
+                  <a href="tel:+8801898796506">+880 1898-796506</a>{" "}
+                  <br />
+                  <a href="tel:+8801898796507">+880 1898-796507</a>
+                </div>
               </div>
               <div className="flex items-center gap-3 text-sm opacity-60 group hover:opacity-100 transition-opacity">
                 <MapPin className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                <span>San Francisco, CA</span>
+                <span>
+                  2nd Floor, House-1, Road-1, Section-7, Mirpur-11,
+                  Dhaka-1216
+                </span>
               </div>
             </div>
 
@@ -155,7 +173,7 @@ export default function Footer() {
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="opacity-60 hover:opacity-100 text-sky-500 transition-all duration-300 font-medium"
+              className="opacity-60 hover:opacity-100 text-gray-200 transition-all duration-300 font-medium"
             >
               gm group
             </a>
@@ -176,6 +194,7 @@ export default function Footer() {
                 href={social.href}
                 className="opacity-40 hover:opacity-100 transition-opacity group"
                 aria-label={social.label}
+                target="_blank"
               >
                 <social.icon className="w-4 h-4 group-hover:text-primary transition-colors" />
               </Link>

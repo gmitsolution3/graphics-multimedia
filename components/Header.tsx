@@ -9,7 +9,7 @@ import Image from "next/image";
 import { getSession } from "@/lib/auth-client";
 
 const navItems = [
-  { label: "Home", href: "home" },
+  { label: "Home", href: "/" },
   { label: "Services", href: "/#services" },
   { label: "About", href: "/#about" },
   {
@@ -46,39 +46,38 @@ const InstagramIcon = () => (
   </svg>
 );
 
-const TwitterIcon = () => (
+const YouTubeIcon = () => (
   <svg
     className="w-3.5 h-3.5"
     fill="currentColor"
     viewBox="0 0 24 24"
   >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
-const LinkedInIcon = () => (
-  <svg
-    className="w-3.5 h-3.5"
-    fill="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    <path d="M23.498 6.186a2.997 2.997 0 0 0-2.11-2.12C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.388.566a2.997 2.997 0 0 0-2.11 2.12C0 8.07 0 12 0 12s0 3.93.502 5.814a2.997 2.997 0 0 0 2.11 2.12C4.495 20.5 12 20.5 12 20.5s7.505 0 9.388-.566a2.997 2.997 0 0 0 2.11-2.12C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.75 15.568V8.432L15.818 12 9.75 15.568z" />
   </svg>
 );
 
 const socialLinks = [
-  { Icon: FacebookIcon, href: "#", label: "Facebook" },
-  { Icon: InstagramIcon, href: "#", label: "Instagram" },
-  { Icon: TwitterIcon, href: "#", label: "Twitter" },
-  { Icon: LinkedInIcon, href: "#", label: "LinkedIn" },
+  {
+    Icon: FacebookIcon,
+    href: "https://www.facebook.com/graphicsmultimedia.net",
+    label: "Facebook",
+  },
+  {
+    Icon: InstagramIcon,
+    href: "https://www.instagram.com/graphicsmultimedia1?igsh=bnZlMGZmNjk4MWR2",
+    label: "Instagram",
+  },
+  {
+    Icon: YouTubeIcon,
+    href: "https://www.youtube.com/@graphicsMultimedia1122",
+    label: "Youtube",
+  },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [packagesDropdownOpen, setPackagesDropdownOpen] =
     useState(false);
-
-  const { data: session } = getSession();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -88,11 +87,11 @@ export default function Header() {
           <div className="flex items-center justify-between h-9">
             {/* Email */}
             <a
-              href="mailto:info@graphicsmultimedia.com"
+              href="mailto:graphicsmultimedia.net"
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <Mail className="w-3.5 h-3.5 shrink-0" />
-              <span>info@graphicsmultimedia.com</span>
+              <span>graphicsmultimedia.net</span>
             </a>
 
             {/* Social Icons */}
@@ -102,6 +101,7 @@ export default function Header() {
                   key={label}
                   href={href}
                   aria-label={label}
+                  target="_blank"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Icon />
@@ -184,8 +184,8 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Button className="py-6 w-35 uppercase">
-              Get Started
+            <Button asChild className="py-6 w-35 uppercase">
+              <Link href="/packages/regular">Get Started</Link>
             </Button>
           </div>
 
@@ -244,8 +244,11 @@ export default function Header() {
                   </Link>
                 );
               })}
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground w-full mt-2">
-                Get Started
+              <Button
+                asChild
+                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full mt-2"
+              >
+                <Link href="/packages/regular">Get Started</Link>
               </Button>
             </div>
           </nav>
