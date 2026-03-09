@@ -13,6 +13,7 @@ import GraphicsDesign from "@/assets/graphics-design.jpeg";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
+import Link from "next/link";
 
 const slides = [
   {
@@ -20,7 +21,7 @@ const slides = [
     headline: "We Build Digital Experiences",
     highlight: "Digital Experiences",
     body: "Transform your brand with data-driven strategies. We help businesses grow through innovative solutions and measurable results.",
-    cta: "Start Your Project",
+    cta: "Start Project",
     ctaSecondary: "View Our Work",
     image: DigitalMarketing,
     imageAlt: "Digital marketing",
@@ -73,11 +74,11 @@ export default function Hero() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   return (
@@ -160,7 +161,7 @@ export default function Hero() {
               : "linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0) 100%)",
           }}
         />
-        
+
         {/* Bottom vignette */}
         <div
           className="absolute bottom-0 left-0 right-0 h-40 z-10"
@@ -173,9 +174,14 @@ export default function Hero() {
         {/* Left text content - centered on mobile */}
         <div className="absolute inset-0 z-20 flex items-center">
           <div className="container mx-auto px-6 lg:px-16">
-            <div className={`${isMobile ? 'text-center w-full' : 'max-w-xl'}`} key={animKey}>
+            <div
+              className={`${isMobile ? "text-center w-full" : "max-w-xl"}`}
+              key={animKey}
+            >
               {/* Tag */}
-              <div className={`a-tag mb-4 md:mb-5 ${isMobile ? 'flex justify-center' : ''}`}>
+              <div
+                className={`a-tag mb-4 md:mb-5 ${isMobile ? "flex justify-center" : ""}`}
+              >
                 <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-white/70 border border-white/20 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/70" />
                   {slides[activeIndex].tag}
@@ -183,7 +189,9 @@ export default function Hero() {
               </div>
 
               {/* Headline - smaller on mobile */}
-              <h1 className={`a-head ${isMobile ? 'text-3xl sm:text-4xl' : 'text-5xl lg:text-6xl'} font-light text-white leading-[1.1] tracking-tight mb-4 md:mb-5`}>
+              <h1
+                className={`a-head ${isMobile ? "text-3xl sm:text-4xl" : "text-5xl lg:text-6xl"} font-light text-white leading-[1.1] tracking-tight mb-4 md:mb-5`}
+              >
                 {slides[activeIndex].headline
                   .split(slides[activeIndex].highlight)
                   .map((part, i, arr) => (
@@ -199,21 +207,33 @@ export default function Hero() {
               </h1>
 
               {/* Body */}
-              <p className={`a-body text-white/60 text-sm md:text-base leading-relaxed mb-8 md:mb-10 ${isMobile ? 'max-w-md mx-auto' : 'max-w-sm'}`}>
+              <p
+                className={`a-body text-white/60 text-sm md:text-base leading-relaxed mb-8 md:mb-10 ${isMobile ? "max-w-md mx-auto" : "max-w-sm"}`}
+              >
                 {slides[activeIndex].body}
               </p>
 
               {/* CTAs - stacked on mobile */}
-              <div className={`a-cta flex ${isMobile ? 'flex-col items-center gap-3' : 'flex-col sm:flex-row gap-3'}`}>
-                <Button className={`py-5 md:py-6 ${isMobile ? 'w-full max-w-xs' : 'w-50'} uppercase`}>
-                  {slides[activeIndex].cta}
-                  <ArrowRight className="ml-2 w-4 h-4" />
+              <div
+                className={`a-cta flex ${isMobile ? "flex-col items-center gap-3" : "flex-col sm:flex-row gap-3"}`}
+              >
+                <Button
+                  className={`py-5 md:py-6 ${isMobile ? "w-full max-w-xs" : "w-50"} uppercase`}
+                  asChild
+                >
+                  <Link href="/package/regular">
+                    {slides[activeIndex].cta}
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
                 </Button>
                 <Button
                   variant="outline"
-                  className={`py-5 md:py-6 ${isMobile ? 'w-full max-w-xs' : 'w-50'} uppercase border-white/60 bg-transparent text-white`}
+                  className={`py-5 md:py-6 ${isMobile ? "w-full max-w-xs" : "w-50"} uppercase border-white/60 bg-transparent text-white`}
+                  asChild
                 >
-                  {slides[activeIndex].ctaSecondary}
+                  <Link href="/#portfolio">
+                    {slides[activeIndex].ctaSecondary}
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -259,11 +279,14 @@ export default function Hero() {
                       {slides.map((_, i) => (
                         <button
                           key={i}
-                          onClick={() => swiperRef.current?.slideToLoop(i)}
+                          onClick={() =>
+                            swiperRef.current?.slideToLoop(i)
+                          }
                           aria-label={`Slide ${i + 1}`}
                           className="relative h-0.5 rounded-full overflow-hidden transition-all duration-300 bg-white/25"
                           style={{
-                            width: i === activeIndex ? "36px" : "12px",
+                            width:
+                              i === activeIndex ? "36px" : "12px",
                           }}
                         >
                           {i === activeIndex && (
@@ -301,10 +324,16 @@ export default function Hero() {
                 <div
                   key={`stats-${animKey}`}
                   className="a-stats flex justify-center gap-6 md:gap-10 w-full overflow-x-auto pb-2 scrollbar-hide"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                  }}
                 >
                   {slides[activeIndex].stats.map((stat) => (
-                    <div key={stat.label} className="group flex-shrink-0 text-center">
+                    <div
+                      key={stat.label}
+                      className="group flex-shrink-0 text-center"
+                    >
                       <p className="text-white text-xl md:text-2xl font-light leading-none">
                         {stat.value}
                       </p>
@@ -330,7 +359,9 @@ export default function Hero() {
                     {slides.map((_, i) => (
                       <button
                         key={i}
-                        onClick={() => swiperRef.current?.slideToLoop(i)}
+                        onClick={() =>
+                          swiperRef.current?.slideToLoop(i)
+                        }
                         aria-label={`Slide ${i + 1}`}
                         className="relative h-0.5 rounded-full overflow-hidden transition-all duration-300 bg-white/25"
                         style={{

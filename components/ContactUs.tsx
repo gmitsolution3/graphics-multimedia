@@ -55,7 +55,7 @@ export default function Contact() {
                 <div className="space-y-6">
                   {/* Email */}
                   <a
-                    href="mailto:hello@nexusdigital.com"
+                    href="mailto:graphicsmultimedia.net"
                     className="flex items-center gap-4 group"
                   >
                     <div className="w-10 h-10 flex items-center justify-center">
@@ -64,14 +64,14 @@ export default function Contact() {
                     <div>
                       <p className="text-xs opacity-40 mb-1">Email</p>
                       <p className="text-sm opacity-80 group-hover:opacity-100 transition-opacity">
-                        hello@nexusdigital.com
+                        graphicsmultimedia.net
                       </p>
                     </div>
                   </a>
 
                   {/* Phone */}
                   <a
-                    href="tel:+15551234567"
+                    href="tel:+8801898796506"
                     className="flex items-center gap-4 group"
                   >
                     <div className="w-10 h-10 flex items-center justify-center">
@@ -80,7 +80,10 @@ export default function Contact() {
                     <div>
                       <p className="text-xs opacity-40 mb-1">Phone</p>
                       <p className="text-sm opacity-80 group-hover:opacity-100 transition-opacity">
-                        +1 (555) 123-4567
+                        +880 1898-796506
+                      </p>
+                      <p className="text-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                        +880 1898-796507
                       </p>
                     </div>
                   </a>
@@ -95,9 +98,8 @@ export default function Contact() {
                         Office
                       </p>
                       <p className="text-sm opacity-80">
-                        123 Digital Avenue
-                        <br />
-                        San Francisco, CA 94105
+                        2nd Floor, House-1, <br /> Road-1, Section-7,
+                        Mirpur-11, Dhaka-1216
                       </p>
                     </div>
                   </div>
@@ -126,22 +128,6 @@ export default function Contact() {
                     >
                       {item}
                     </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Social links (optional) */}
-              <div className="pt-6">
-                <p className="text-xs opacity-40 mb-4">Follow us</p>
-                <div className="flex items-center gap-5">
-                  {["FB", "IG", "TW", "LI"].map((social) => (
-                    <Link
-                      key={social}
-                      href="#"
-                      className="text-xs opacity-40 hover:opacity-100 hover:text-primary transition-all"
-                    >
-                      {social}
-                    </Link>
                   ))}
                 </div>
               </div>
