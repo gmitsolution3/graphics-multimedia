@@ -18,6 +18,7 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { ImageUploader } from "@/components/image-uploader";
 
 import { useEffect, Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
@@ -41,6 +42,7 @@ const serviceFormSchema = z.object({
     .string()
     .min(1, "Description is required")
     .max(500, "Description must be less than 500 characters"),
+  image: z.string().min(1, "Image is required"),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -64,6 +66,7 @@ export default function AdminServiceEditModal({
       name: "",
       price: 0,
       description: "",
+      image: "",
     },
   });
 
@@ -72,6 +75,7 @@ export default function AdminServiceEditModal({
       const serviceName = values.name;
       const servicePrice = values.price;
       const serviceDescription = values.description;
+      const serviceImage = values.image;
 
       const res = await updateItem({
         id: selectedService?._id as string,
@@ -79,6 +83,7 @@ export default function AdminServiceEditModal({
           name: serviceName,
           price: servicePrice,
           description: serviceDescription,
+          image: serviceImage,
         },
       });
 
@@ -97,6 +102,7 @@ export default function AdminServiceEditModal({
       name: selectedService?.name,
       price: selectedService?.price || 0,
       description: selectedService?.description || "",
+      image: selectedService?.image || "",
     });
   }, [isEditModalOpen, selectedService]);
 
@@ -146,7 +152,10 @@ export default function AdminServiceEditModal({
                       placeholder="Enter price"
                       {...field}
                       onChange={(e) => {
-                        const value = e.target.value === "" ? 0 : parseFloat(e.target.value);
+                        const value =
+                          e.target.value === ""
+                            ? 0
+                            : parseFloat(e.target.value);
                         field.onChange(value);
                       }}
                       value={field.value}
@@ -173,6 +182,24 @@ export default function AdminServiceEditModal({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={editForm.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Image</FormLabel>
+                  <FormControl>
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="flex justify-end gap-3 pt-4">
               <Button
                 type="button"

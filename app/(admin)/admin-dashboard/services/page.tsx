@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGetServices } from "@/hooks/swr/useGetServices";
 import { useDelete } from "@/hooks/swr/useDelete";
 import * as z from "zod";
+import Image from "next/image";
 
 import {
   Table,
@@ -23,6 +24,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import {
   ColumnDef,
@@ -30,7 +39,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal, PackageX, PlusCircle } from "lucide-react";
+import { MoreHorizontal, PackageX, PlusCircle, Image as ImageIcon, X } from "lucide-react";
 
 import { IService } from "@/types";
 import { formatDate, formatPrice } from "@/utils";
@@ -45,8 +54,8 @@ export default function ServicesPage() {
   const services: IService[] = data?.data || [];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedService, setSelectedService] =
-    useState<IService | null>(null);
+  const [selectedService, setSelectedService] = useState<IService | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const { deleteItem, revalidate } = useDelete("/services");
 
@@ -82,6 +91,35 @@ export default function ServicesPage() {
   };
 
   const columns: ColumnDef<IService>[] = [
+    {
+      accessorKey: "image",
+      header: "Image",
+      size: 15,
+      cell: ({ row }) => {
+        const imageUrl = row.original.image;
+        return (
+          <div>
+            {imageUrl ? (
+              <div 
+                className="relative h-12 w-12 rounded-md overflow-hidden cursor-pointer border border-muted hover:opacity-80 transition-opacity"
+                onClick={() => setPreviewImage(imageUrl)}
+              >
+                <Image
+                  src={imageUrl}
+                  alt={row.original.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="h-12 w-12 rounded-md bg-muted flex items-center justify-center">
+                <ImageIcon className="h-5 w-5 text-muted-foreground" />
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
     {
       accessorKey: "name",
       header: () => <div className="text-left">Name</div>,
@@ -166,9 +204,20 @@ export default function ServicesPage() {
     },
   ];
 
+  // Adjust column sizes to accommodate the new image column
+  const adjustedColumns = columns.map((col, index) => {
+    if (index === 0) return { ...col, size: 10 }; // Image column
+    if (index === 1) return { ...col, size: 18 }; // Name column (reduced)
+    if (index === 2) return { ...col, size: 12 }; // Price column (reduced)
+    if (index === 3) return { ...col, size: 25 }; // Description column (reduced)
+    if (index === 4) return { ...col, size: 20 }; // Created column (reduced)
+    if (index === 5) return { ...col, size: 15 }; // Actions column (same)
+    return col;
+  });
+
   const table = useReactTable({
     data: services,
-    columns,
+    columns: adjustedColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -282,6 +331,35 @@ export default function ServicesPage() {
           </div>
         </Card>
       </section>
+
+      {/* Image Preview Modal */}
+      <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
+        <DialogContent className="sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Image Preview</DialogTitle>
+            <DialogDescription>
+              Full size preview of the service image
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
+            {previewImage && (
+              <Image
+                src={previewImage}
+                alt="Service preview"
+                fill
+                className="object-contain"
+              />
+            )}
+          </div>
+          <Button
+            variant="outline"
+            className="absolute top-4 right-4"
+            onClick={() => setPreviewImage(null)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Service Modal */}
       <AdminServiceEditModal

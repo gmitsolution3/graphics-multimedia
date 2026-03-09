@@ -8,6 +8,7 @@ export interface IService {
   name: string;
   description: string;
   price: number;
+  image: string;
   createdAt: string;
 }
 export interface IPackage {

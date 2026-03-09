@@ -18,6 +18,10 @@ const ServiceSchema = new Schema<IService>(
       type: Number,
       required: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
   },
   { strict: true, timestamps: true, versionKey: false },
 );

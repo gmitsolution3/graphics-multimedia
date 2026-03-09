@@ -19,6 +19,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import { ImageUploader } from "@/components/image-uploader";
 
 import { useEffect, Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
@@ -40,6 +41,7 @@ const serviceFormSchema = z.object({
     .string()
     .min(1, "Description is required")
     .max(500, "Description must be less than 500 characters"),
+  image: z.string().min(1, "Image is required"),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -61,6 +63,7 @@ export default function AdminServiceAddModal({
       name: "",
       price: 0,
       description: "",
+      image: "",
     },
   });
 
@@ -69,11 +72,13 @@ export default function AdminServiceAddModal({
       const serviceName = values.name;
       const servicePrice = values.price;
       const serviceDescription = values.description;
+      const serviceImage = values.image;
 
       const res = await createItem({
         name: serviceName,
         price: servicePrice,
         description: serviceDescription,
+        image: serviceImage,
       });
 
       if (res.success) {
@@ -136,7 +141,10 @@ export default function AdminServiceAddModal({
                       placeholder="Enter price"
                       {...field}
                       onChange={(e) => {
-                        const value = e.target.value === "" ? 0 : parseFloat(e.target.value);
+                        const value =
+                          e.target.value === ""
+                            ? 0
+                            : parseFloat(e.target.value);
                         field.onChange(value);
                       }}
                       value={field.value}
@@ -157,6 +165,22 @@ export default function AdminServiceAddModal({
                       placeholder="Enter service description"
                       className="resize-none min-h-[100px]"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={addForm.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Image</FormLabel>
+                  <FormControl>
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

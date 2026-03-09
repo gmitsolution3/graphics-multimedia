@@ -118,7 +118,7 @@ export default function Login() {
           </h2>
 
           <p className="text-sm opacity-60">
-            Sign in to your account
+            Log in to your account
           </p>
         </div>
 
@@ -217,10 +217,10 @@ export default function Login() {
             <Button
               type="submit"
               disabled={isLoading || isSubmitting}
-              className="relative overflow-hidden group w-full bg-transparent border border-border/60 hover:border-primary/50 text-foreground uppercase text-xs tracking-[0.2em] px-8 py-6 rounded-none transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="relative overflow-hidden group w-full bg-transparent border border-border/60 hover:border-primary/50 text-foreground uppercase text-xs tracking-[0.2em] px-8 py-6 rounded-none transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed hover:text-white"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? "Logging in..." : "Log in"}
                 {!isLoading && (
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 )}
