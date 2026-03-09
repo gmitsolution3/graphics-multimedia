@@ -54,6 +54,7 @@ export default async function Services() {
                     <Image
                       height={300}
                       width={300}
+                      className="w-12"
                       src={service.image}
                       alt="Service Image"
                     />
