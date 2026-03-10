@@ -15,7 +15,7 @@ const brandModels = [
     name: "Sophie Williams",
     designation: "Brand Model & Influencer",
     bio: "Sophie Williams is a professional brand model who collaborates with companies to promote products through engaging promotional videos. With over 5 years of experience in fashion and lifestyle campaigns, she brings authenticity and charisma to every project.",
-    image: "https://i.ibb.co.com/RkJ3Y2zs/siam.jpg",
+    image: ModelImage,
     demoVideo: "https://youtu.be/j-e626ulUCc?si=UOwiKJi6Wxzfbp2e",
     pricing: [
       { duration: "30 sec", price: 3000 },
@@ -29,7 +29,7 @@ const brandModels = [
     name: "James Rodriguez",
     designation: "Commercial Model & Brand Ambassador",
     bio: "James specializes in commercial and corporate brand representation. His professional demeanor and versatile look make him ideal for business, tech, and lifestyle campaigns targeting modern audiences.",
-    image: "https://i.ibb.co.com/RkJ3Y2zs/siam.jpg",
+    image: ModelImage,
     demoVideo: "https://youtu.be/j-e626ulUCc?si=UOwiKJi6Wxzfbp2e",
     pricing: [
       { duration: "30 sec", price: 3500 },
@@ -43,7 +43,7 @@ const brandModels = [
     name: "Elena Martinez",
     designation: "Lifestyle Model & Content Creator",
     bio: "Elena creates authentic lifestyle content that resonates with millennial and Gen Z audiences. Her expertise includes social media campaigns, product placements, and brand storytelling through video.",
-    image: "https://i.ibb.co.com/RkJ3Y2zs/siam.jpg",
+    image: ModelImage,
     demoVideo: "https://youtu.be/j-e626ulUCc?si=UOwiKJi6Wxzfbp2e",
     pricing: [
       { duration: "30 sec", price: 2800 },
