@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
 import Link from "next/link";
 import { useGetServices } from "@/hooks/swr/useGetServices";
-import { CustomServiceLoader } from "@/components/loaders/CustomServiceLoader";
 import CustomPackageBookingForm from "@/components/forms/CustomBookingForm";
-import CustomPackageSummary from "@/components/CustomPackageSummery";
+import CustomPackageSelection, { SelectedServiceWithQuantity } from "@/components/CustomPackageSelection";
 import { IService } from "@/types";
 import { usePost } from "@/hooks/swr/usePost";
 import Swal from "sweetalert2";
@@ -14,37 +12,63 @@ import { notify } from "@/utils/toast";
 import { useRouter } from "next/navigation";
 
 export default function CustomPackagePage() {
-  const [selectedServices, setSelectedServices] = useState<string[]>(
-    [],
-  );
+  const [selectedServices, setSelectedServices] = useState<SelectedServiceWithQuantity[]>([]);
   const { data, isLoading } = useGetServices();
   const services = data?.data || [];
 
   const { createItem, isCreating } = usePost("/bookings");
-
   const router = useRouter();
 
   const toggleService = (serviceId: string) => {
-    setSelectedServices((prev) =>
-      prev.includes(serviceId)
-        ? prev.filter((id) => id !== serviceId)
-        : [...prev, serviceId],
-    );
+    setSelectedServices((prev) => {
+      const existing = prev.find(s => s.serviceId === serviceId);
+      
+      if (existing) {
+        // If service exists, remove it
+        return prev.filter(s => s.serviceId !== serviceId);
+      } else {
+        // If service doesn't exist, add it with quantity 1
+        const service = services.find((s: IService) => s._id === serviceId);
+        return [...prev, {
+          serviceId,
+          quantity: 1,
+          name: service?.name || "",
+          price: service?.price || 0
+        }];
+      }
+    });
+  };
+
+  const updateQuantity = (serviceId: string, newQuantity: number) => {
+    if (newQuantity < 1) {
+      // If quantity becomes 0, remove the service
+      setSelectedServices(prev => prev.filter(s => s.serviceId !== serviceId));
+    } else {
+      setSelectedServices(prev =>
+        prev.map(s =>
+          s.serviceId === serviceId
+            ? { ...s, quantity: newQuantity }
+            : s
+        )
+      );
+    }
   };
 
   const handleFormSubmit = async (formData: any) => {
-    const selectedServicesDetails = selectedServices.map((id) => {
-      const service = services.find((s: IService) => s._id === id);
+    // Transform selected services with quantities for the package
+    const selectedServicesDetails = selectedServices.map((item) => {
       return {
-        name: service?.name || "",
-        price: service?.price || 0,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        totalPrice: item.price * item.quantity,
         included: true,
       };
     });
 
-    const totalPrice = selectedServices.reduce((sum, id) => {
-      const service = services.find((s: IService) => s._id === id);
-      return sum + (service?.price || 0);
+    // Calculate total price including quantities
+    const totalPrice = selectedServices.reduce((sum, item) => {
+      return sum + (item.price * item.quantity);
     }, 0);
 
     const customPackageData = {
@@ -59,7 +83,12 @@ export default function CustomPackagePage() {
             : formData.timeline === "6months"
               ? "Bi-annual"
               : "Annual",
-      services: selectedServicesDetails,
+      services: selectedServicesDetails.map(s => ({
+        name: s.name,
+        price: s.price,
+        included: true,
+        quantity: s.quantity
+      })),
     };
 
     const payload = {
@@ -90,9 +119,8 @@ export default function CustomPackagePage() {
     }
   };
 
-  const totalPrice = selectedServices.reduce((sum, id) => {
-    const service = services.find((s: IService) => s._id === id);
-    return sum + (service?.price || 0);
+  const totalPrice = selectedServices.reduce((sum, item) => {
+    return sum + (item.price * item.quantity);
   }, 0);
 
   return (
@@ -107,8 +135,7 @@ export default function CustomPackagePage() {
             Build your custom package
           </h2>
           <p className="text-base lg:text-lg max-w-2xl mx-auto leading-relaxed opacity-60">
-            Select the services you need and we'll create a tailored
-            solution for your business.
+            Select the services you need and set quantities for each.
           </p>
         </div>
 
@@ -132,108 +159,14 @@ export default function CustomPackagePage() {
 
             {/* Right Column - Service Selection */}
             <div>
-              <div className="sticky top-24">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-sm tracking-[0.2em] uppercase opacity-40">
-                    Available services
-                  </h3>
-                  {!isLoading && (
-                    <span className="text-xs opacity-40">
-                      {selectedServices.length} selected
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-8 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
-                  {isLoading ? (
-                    <>
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <CustomServiceLoader key={index} />
-                      ))}
-                    </>
-                  ) : (
-                    services.map((service: IService) => {
-                      const isSelected = selectedServices.includes(
-                        service._id,
-                      );
-                      return (
-                        <div
-                          key={service._id}
-                          onClick={() => toggleService(service._id)}
-                          className={`p-4 border transition-all duration-300 cursor-pointer group ${
-                            isSelected
-                              ? "border-primary/30 bg-primary/5"
-                              : "border-border/40 hover:border-border/60"
-                          }`}
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <div
-                                  className={`w-4 h-4 border flex items-center justify-center transition-colors ${
-                                    isSelected
-                                      ? "border-primary bg-primary/10"
-                                      : "border-border"
-                                  }`}
-                                >
-                                  {isSelected && (
-                                    <Check className="w-3 h-3 text-primary" />
-                                  )}
-                                </div>
-                                <h5 className="text-sm font-light">
-                                  {service.name}
-                                </h5>
-                              </div>
-                              <p className="text-xs opacity-40 pl-6">
-                                {service.description}
-                              </p>
-                            </div>
-                            <span className="text-sm font-light ml-4">
-                              ${service.price}
-                            </span>
-                          </div>
-
-                          {/* Accent line */}
-                          <div
-                            className={`w-8 h-px mt-3 transition-all duration-300 ${
-                              isSelected
-                                ? "bg-primary/60 w-12"
-                                : "bg-primary/30 group-hover:w-12"
-                            }`}
-                          ></div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-
-                {/* Selected Services Summary */}
-                {!isLoading && (
-                  <CustomPackageSummary
-                    selectedServices={selectedServices}
-                    services={services}
-                    totalPrice={totalPrice}
-                    onRemoveService={toggleService}
-                  />
-                )}
-
-                {/* Custom scrollbar styles */}
-                <style jsx>{`
-                  .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
-                  }
-                  .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                  }
-                  .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgba(0, 0, 0, 0.1);
-                    border-radius: 0;
-                  }
-                  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: rgba(0, 0, 0, 0.2);
-                  }
-                `}</style>
-              </div>
+              <CustomPackageSelection
+                services={services}
+                isLoading={isLoading}
+                selectedServices={selectedServices}
+                onToggleService={toggleService}
+                onUpdateQuantity={updateQuantity}
+                totalPrice={totalPrice}
+              />
             </div>
           </div>
         </div>
