@@ -1,4 +1,3 @@
-// app/brand-model/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,10 +5,10 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Play, Calendar, Clock } from "lucide-react";
 import ModelImage from "@/assets/model.jpg";
-import BrandModelDemoVideoModal from "@/components/modals/BrandModelDemoVideoModal";
-import BrandModelBookingModal from "@/components/modals/BrandModelBookingModal";
+import InfluencerDemoVideoModal from "@/components/modals/InfluencerDemoVideoModal";
+import InfluencerBookingModal from "@/components/modals/InfluencerBookingModal";
 
-const brandModels = [
+const influencers = [
   {
     id: 1,
     name: "Sophie Williams",
@@ -55,33 +54,38 @@ const brandModels = [
 ];
 
 // Main Brand Model Page
-export default function BrandModelPage() {
+export default function InfluencersPage() {
   const [demoVideoOpen, setDemoVideoOpen] = useState<boolean>(false);
   const [bookingOpen, setBookingOpen] = useState<boolean>(false);
-  const [selectedModelForVideo, setSelectedModelForVideo] = useState<
-    (typeof brandModels)[0] | null
-  >(null);
-  const [selectedModelForBooking, setSelectedModelForBooking] =
-    useState<(typeof brandModels)[0] | null>(null);
+  const [selectedInfluencerForVideo, setSelectedInfluencerForVideo] =
+    useState<(typeof influencers)[0] | null>(null);
+  const [
+    selectedInfluencerForBooking,
+    setSelectedInfluencerForBooking,
+  ] = useState<(typeof influencers)[0] | null>(null);
 
-  const handleDemoVideoClick = (model: (typeof brandModels)[0]) => {
-    setSelectedModelForVideo(model);
+  const handleDemoVideoClick = (
+    influencer: (typeof influencers)[0],
+  ) => {
+    setSelectedInfluencerForVideo(influencer);
     setDemoVideoOpen(true);
   };
 
   const handleCloseDemoVideo = () => {
     setDemoVideoOpen(false);
-    setSelectedModelForVideo(null);
+    setSelectedInfluencerForVideo(null);
   };
 
-  const handleBookingClick = (model: (typeof brandModels)[0]) => {
-    setSelectedModelForBooking(model);
+  const handleBookingClick = (
+    influencer: (typeof influencers)[0],
+  ) => {
+    setSelectedInfluencerForBooking(influencer);
     setBookingOpen(true);
   };
 
   const handleCloseBooking = () => {
     setBookingOpen(false);
-    setSelectedModelForBooking(null);
+    setSelectedInfluencerForBooking(null);
   };
 
   return (
@@ -93,27 +97,27 @@ export default function BrandModelPage() {
             <div className="w-12 h-0.5 bg-primary mx-auto mb-6"></div>
           </div>
           <h2 className="text-3xl lg:text-4xl font-light tracking-tight mb-5">
-            Our Brand Models
+            Our Influencers
           </h2>
           <p className="text-base lg:text-lg max-w-2xl mx-auto leading-relaxed opacity-60">
-            Professional models ready to bring your brand to life
+            Professional influencers ready to bring your brand to life
             through authentic video content.
           </p>
         </div>
 
-        {/* Models Grid */}
+        {/* Influencerss Grid */}
         <div className="max-w-6xl mx-auto space-y-8">
-          {brandModels.map((model) => (
+          {influencers.map((influencer) => (
             <div
-              key={model.id}
+              key={influencer.id}
               className="grid md:grid-cols-3 gap-8 border border-border/40 p-6 lg:p-8 group hover:border-primary/20 transition-all duration-500"
             >
               {/* Image Column */}
               <div className="md:col-span-1">
                 <div className="aspect-[3/4] relative overflow-hidden bg-muted">
                   <Image
-                    src={model.image}
-                    alt={model.name}
+                    src={influencer.image}
+                    alt={influencer.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
@@ -129,17 +133,17 @@ export default function BrandModelPage() {
                 <div>
                   {/* Name */}
                   <h3 className="text-2xl lg:text-3xl font-light tracking-tight mb-2">
-                    {model.name}
+                    {influencer.name}
                   </h3>
 
                   {/* Designation */}
                   <p className="text-xs tracking-[0.2em] uppercase opacity-40 mb-4">
-                    {model.designation}
+                    {influencer.designation}
                   </p>
 
                   {/* Bio */}
                   <p className="text-sm opacity-70 leading-relaxed mb-6">
-                    {model.bio}
+                    {influencer.bio}
                   </p>
 
                   {/* Pricing Preview */}
@@ -148,7 +152,7 @@ export default function BrandModelPage() {
                       Starting rates
                     </p>
                     <div className="flex flex-wrap gap-4">
-                      {model.pricing.slice(0, 2).map((item) => (
+                      {influencer.pricing.slice(0, 2).map((item) => (
                         <div
                           key={item.duration}
                           className="flex items-center gap-2 text-sm"
@@ -170,7 +174,7 @@ export default function BrandModelPage() {
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-4">
                   <Button
-                    onClick={() => handleDemoVideoClick(model)}
+                    onClick={() => handleDemoVideoClick(influencer)}
                     className="relative overflow-hidden group/btn bg-transparent border border-border/60 hover:border-primary/50 text-foreground hover:text-white uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500"
                   >
                     <span className="relative z-10 flex items-center gap-2">
@@ -181,7 +185,7 @@ export default function BrandModelPage() {
                   </Button>
 
                   <Button
-                    onClick={() => handleBookingClick(model)}
+                    onClick={() => handleBookingClick(influencer)}
                     className="relative overflow-hidden group/btn bg-transparent border border-primary/30 hover:border-primary text-foreground hover:text-white uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500"
                   >
                     <span className="relative z-10 flex items-center gap-2">
@@ -202,7 +206,7 @@ export default function BrandModelPage() {
         {/* Bottom accent */}
         <div className="text-center mt-20">
           <span className="text-xs tracking-[0.3em] uppercase opacity-40">
-            Book your perfect brand model
+            Book your perfect brand influencer
           </span>
         </div>
       </div>
@@ -212,21 +216,21 @@ export default function BrandModelPage() {
       <div className="fixed bottom-0 right-0 w-12 h-12 border-r border-b border-primary/5 pointer-events-none"></div>
 
       {/* Demo Video Modal */}
-      {selectedModelForVideo && (
-        <BrandModelDemoVideoModal
+      {selectedInfluencerForVideo && (
+        <InfluencerDemoVideoModal
           isOpen={demoVideoOpen}
           onClose={handleCloseDemoVideo}
-          videoUrl={selectedModelForVideo.demoVideo}
-          modelName={selectedModelForVideo.name}
+          videoUrl={selectedInfluencerForVideo.demoVideo}
+          influencerName={selectedInfluencerForVideo.name}
         />
       )}
 
       {/* Booking Modal */}
-      {selectedModelForBooking && (
-        <BrandModelBookingModal
+      {selectedInfluencerForBooking && (
+        <InfluencerBookingModal
           isOpen={bookingOpen}
           onClose={handleCloseBooking}
-          model={selectedModelForBooking}
+          influencer={selectedInfluencerForBooking}
         />
       )}
     </section>

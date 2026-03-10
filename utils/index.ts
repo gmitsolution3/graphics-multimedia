@@ -23,3 +23,17 @@ export const getInitials = (name: string) => {
     .toUpperCase()
     .slice(0, 2);
 };
+
+export const getYouTubeEmbedUrl = (url: string): string | null => {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match)
+      return `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+  }
+  return null;
+};

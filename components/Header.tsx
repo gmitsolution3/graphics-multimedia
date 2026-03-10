@@ -22,7 +22,7 @@ const navItems = [
   },
   { label: "Team", href: "/#team" },
   { label: "Portfolio", href: "/#portfolio" },
-  { label: "Models", href: "/brand-models" },
+  { label: "Influencers", href: "/influencers" },
   { label: "Contact", href: "/#contact" },
 ];
 

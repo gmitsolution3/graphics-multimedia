@@ -4,38 +4,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { X, Film } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Film } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { getYouTubeEmbedUrl } from "@/utils";
 
-interface DemoVideoModalProps {
+interface IProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
-  modelName: string;
+  influencerName: string;
 }
 
-// Function to extract YouTube video ID from various URL formats
-const getYouTubeEmbedUrl = (url: string): string | null => {
-  const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-    /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
-  ];
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match)
-      return `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
-  }
-  return null;
-};
-
-export default function BrandModelDemoVideoModal({
+export default function InfluencerDemoVideoModal({
   isOpen,
   onClose,
   videoUrl,
-  modelName,
-}: DemoVideoModalProps) {
+  influencerName,
+}: IProps) {
   const embedUrl = getYouTubeEmbedUrl(videoUrl);
 
   return (
@@ -44,7 +29,7 @@ export default function BrandModelDemoVideoModal({
         {/* Header */}
         <DialogHeader className="flex flex-row items-center justify-between p-4 border-b border-border/40">
           <DialogTitle className="text-sm tracking-[0.2em] uppercase opacity-60">
-            {modelName} - Demo Reel
+            {influencerName} - Demo Reel
           </DialogTitle>
         </DialogHeader>
 
@@ -54,7 +39,7 @@ export default function BrandModelDemoVideoModal({
             {embedUrl ? (
               <iframe
                 src={embedUrl}
-                title={`${modelName} Demo Reel`}
+                title={`${influencerName} Demo Reel`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"

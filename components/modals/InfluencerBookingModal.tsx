@@ -1,4 +1,3 @@
-// components/modals/BrandModelBookingModal.tsx
 "use client";
 
 import { useState } from "react";
@@ -37,8 +36,12 @@ import {
 const bookingFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
-  company: z.string().min(2, "Company name must be at least 2 characters"),
+  phone: z
+    .string()
+    .min(10, "Phone number must be at least 10 characters"),
+  company: z
+    .string()
+    .min(2, "Company name must be at least 2 characters"),
   projectDetails: z
     .string()
     .min(10, "Project details must be at least 10 characters"),
@@ -51,7 +54,7 @@ interface PricingOption {
   price: number;
 }
 
-interface Model {
+interface Influencer {
   id: number;
   name: string;
   designation: string;
@@ -61,19 +64,19 @@ interface Model {
   pricing: PricingOption[];
 }
 
-interface BrandModelBookingModalProps {
+interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  model: Model;
+  influencer: Influencer;
 }
 
-export default function BrandModelBookingModal({
+export default function InfluencerBookingModal({
   isOpen,
   onClose,
-  model,
-}: BrandModelBookingModalProps) {
+  influencer,
+}: IProps) {
   const [selectedDuration, setSelectedDuration] = useState(
-    model.pricing[0].duration
+    influencer.pricing[0].duration,
   );
 
   // Initialize React Hook Form
@@ -89,15 +92,17 @@ export default function BrandModelBookingModal({
   });
 
   const selectedPrice =
-    model.pricing.find((p) => p.duration === selectedDuration)?.price || 0;
+    influencer.pricing.find((p) => p.duration === selectedDuration)
+      ?.price || 0;
 
   const onSubmit = (data: BookingFormValues) => {
     console.log({
       ...data,
-      model: model.name,
+      influencer: influencer.name,
       duration: selectedDuration,
       price: selectedPrice,
     });
+
     // Handle booking submission here
     onClose();
     form.reset(); // Reset form after successful submission
@@ -110,9 +115,9 @@ export default function BrandModelBookingModal({
         <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-border/40 sticky top-0 bg-background z-10">
           <div>
             <DialogTitle className="text-sm tracking-[0.2em] uppercase opacity-60 mb-1">
-              Book {model.name}
+              Book {influencer.name}
             </DialogTitle>
-            <p className="text-xs opacity-40">{model.designation}</p>
+            <p className="text-xs opacity-40">{influencer.designation}</p>
           </div>
           <Button
             variant="ghost"
@@ -126,20 +131,25 @@ export default function BrandModelBookingModal({
 
         {/* Booking Form */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="p-6 space-y-6"
+          >
             {/* Model preview */}
             <div className="flex items-center gap-4 p-4 border border-border/40 bg-primary/5 rounded-none">
               <div className="w-12 h-12 relative overflow-hidden rounded-full">
                 <Image
-                  src={model.image}
-                  alt={model.name}
+                  src={influencer.image}
+                  alt={influencer.name}
                   fill
                   className="object-cover"
                 />
               </div>
               <div>
-                <p className="text-sm font-light">{model.name}</p>
-                <p className="text-xs opacity-40">{model.designation}</p>
+                <p className="text-sm font-light">{influencer.name}</p>
+                <p className="text-xs opacity-40">
+                  {influencer.designation}
+                </p>
               </div>
             </div>
 
@@ -150,18 +160,22 @@ export default function BrandModelBookingModal({
                 Select video duration *
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {model.pricing.map((option) => (
+                {influencer.pricing.map((option: any) => (
                   <button
                     key={option.duration}
                     type="button"
-                    onClick={() => setSelectedDuration(option.duration)}
+                    onClick={() =>
+                      setSelectedDuration(option.duration)
+                    }
                     className={`p-3 border transition-all duration-300 ${
                       selectedDuration === option.duration
                         ? "border-primary/30 bg-primary/5"
                         : "border-border/40 hover:border-border/60"
                     }`}
                   >
-                    <span className="text-xs block">{option.duration}</span>
+                    <span className="text-xs block">
+                      {option.duration}
+                    </span>
                     <span className="text-sm font-light text-primary/80">
                       ${option.price}
                     </span>
@@ -286,8 +300,12 @@ export default function BrandModelBookingModal({
             {/* Price Summary */}
             <div className="p-4 border border-primary/20 bg-primary/5 rounded-none">
               <div className="flex justify-between items-center">
-                <span className="text-xs opacity-60">Total estimate</span>
-                <span className="text-xl font-light">${selectedPrice}</span>
+                <span className="text-xs opacity-60">
+                  Total estimate
+                </span>
+                <span className="text-xl font-light">
+                  ${selectedPrice}
+                </span>
               </div>
               <p className="text-[10px] opacity-30 mt-2">
                 *Final price may vary based on specific requirements
