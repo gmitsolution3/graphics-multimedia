@@ -1,4 +1,4 @@
-import { IPackage } from "@/types";
+import { IPackage, ICustomPackage } from "@/types";
 
 export interface IBooking {
   _id: string;
@@ -7,7 +7,9 @@ export interface IBooking {
   phone: string;
   company: string;
   projectDetails: string;
-  selectedPackage: IPackage;
+  selectedPackage: IPackage | ICustomPackage;
+  packageModel: "Package" | "CustomPackage"; 
+  bookingType: "standard" | "custom";
   createdAt: string;
   updatedAt: string;
 }

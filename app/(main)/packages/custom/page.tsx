@@ -4,7 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useGetServices } from "@/hooks/swr/useGetServices";
 import CustomPackageBookingForm from "@/components/forms/CustomBookingForm";
-import CustomPackageSelection, { SelectedServiceWithQuantity } from "@/components/CustomPackageSelection";
+import CustomPackageSelection, {
+  SelectedServiceWithQuantity,
+} from "@/components/CustomPackageSelection";
 import { IService } from "@/types";
 import { usePost } from "@/hooks/swr/usePost";
 import Swal from "sweetalert2";
@@ -12,7 +14,9 @@ import { notify } from "@/utils/toast";
 import { useRouter } from "next/navigation";
 
 export default function CustomPackagePage() {
-  const [selectedServices, setSelectedServices] = useState<SelectedServiceWithQuantity[]>([]);
+  const [selectedServices, setSelectedServices] = useState<
+    SelectedServiceWithQuantity[]
+  >([]);
   const { data, isLoading } = useGetServices();
   const services = data?.data || [];
 
@@ -21,20 +25,25 @@ export default function CustomPackagePage() {
 
   const toggleService = (serviceId: string) => {
     setSelectedServices((prev) => {
-      const existing = prev.find(s => s.serviceId === serviceId);
-      
+      const existing = prev.find((s) => s.serviceId === serviceId);
+
       if (existing) {
         // If service exists, remove it
-        return prev.filter(s => s.serviceId !== serviceId);
+        return prev.filter((s) => s.serviceId !== serviceId);
       } else {
         // If service doesn't exist, add it with quantity 1
-        const service = services.find((s: IService) => s._id === serviceId);
-        return [...prev, {
-          serviceId,
-          quantity: 1,
-          name: service?.name || "",
-          price: service?.price || 0
-        }];
+        const service = services.find(
+          (s: IService) => s._id === serviceId,
+        );
+        return [
+          ...prev,
+          {
+            serviceId,
+            quantity: 1,
+            name: service?.name || "",
+            price: service?.price || 0,
+          },
+        ];
       }
     });
   };
@@ -42,14 +51,16 @@ export default function CustomPackagePage() {
   const updateQuantity = (serviceId: string, newQuantity: number) => {
     if (newQuantity < 1) {
       // If quantity becomes 0, remove the service
-      setSelectedServices(prev => prev.filter(s => s.serviceId !== serviceId));
+      setSelectedServices((prev) =>
+        prev.filter((s) => s.serviceId !== serviceId),
+      );
     } else {
-      setSelectedServices(prev =>
-        prev.map(s =>
+      setSelectedServices((prev) =>
+        prev.map((s) =>
           s.serviceId === serviceId
             ? { ...s, quantity: newQuantity }
-            : s
-        )
+            : s,
+        ),
       );
     }
   };
@@ -68,7 +79,7 @@ export default function CustomPackagePage() {
 
     // Calculate total price including quantities
     const totalPrice = selectedServices.reduce((sum, item) => {
-      return sum + (item.price * item.quantity);
+      return sum + item.price * item.quantity;
     }, 0);
 
     const customPackageData = {
@@ -83,11 +94,11 @@ export default function CustomPackagePage() {
             : formData.timeline === "6months"
               ? "Bi-annual"
               : "Annual",
-      services: selectedServicesDetails.map(s => ({
+      services: selectedServicesDetails.map((s) => ({
         name: s.name,
         price: s.price,
         included: true,
-        quantity: s.quantity
+        quantity: s.quantity,
       })),
     };
 
@@ -120,7 +131,7 @@ export default function CustomPackagePage() {
   };
 
   const totalPrice = selectedServices.reduce((sum, item) => {
-    return sum + (item.price * item.quantity);
+    return sum + item.price * item.quantity;
   }, 0);
 
   return (

@@ -33,14 +33,6 @@ import {
   MoreHorizontal,
   Package,
   Phone,
-  User,
-  Mail,
-  Building2,
-  FileText,
-  Clock,
-  Tag,
-  CheckCircle2,
-  XCircle,
 } from "lucide-react";
 import { formatDate } from "@/utils";
 import { useState } from "react";
@@ -216,8 +208,6 @@ export default function CustomBookingsPage() {
   if (isLoading) {
     return <BookingTableLoader />;
   }
-
-  console.log(bookings);
 
   return (
     <>

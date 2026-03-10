@@ -17,6 +17,8 @@ import {
   Phone,
   Package,
   Calendar,
+  DollarSign,
+  Hash,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +29,11 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils";
 
 import { formatPrice } from "@/utils";
-import { IPackageService, IBooking } from "@/types";
+import {
+  IPackageService,
+  ICustomPackageService,
+  IBooking,
+} from "@/types";
 
 interface IProps {
   isModalOpen: boolean;
@@ -35,16 +41,46 @@ interface IProps {
   selectedBooking: IBooking | null;
 }
 
+// Type guard to check if service is custom package service
+const isCustomService = (
+  service: any,
+): service is ICustomPackageService => {
+  return "price" in service && "quantity" in service;
+};
+
 export default function AdminBookingDetailModal({
   isModalOpen,
   setIsModalOpen,
   selectedBooking,
 }: IProps) {
   console.log(selectedBooking);
+
+  // Calculate total price for custom packages
+  const calculateCustomTotal = () => {
+    if (
+      !selectedBooking ||
+      selectedBooking.packageModel !== "CustomPackage"
+    )
+      return null;
+
+    return selectedBooking.selectedPackage.services.reduce(
+      (total: number, service: any) => {
+        if (isCustomService(service) && service.included) {
+          return total + service.price * service.quantity;
+        }
+        return total;
+      },
+      0,
+    );
+  };
+
+  const customTotal = calculateCustomTotal();
+
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-      <DialogContent className="max-w-3xl max-h-[90vh]">
-        <DialogHeader>
+      <DialogContent className="max-w-3xl h-[90vh] flex flex-col p-0 gap-0">
+        {/* Fixed Header */}
+        <DialogHeader className="px-6 pt-6 pb-2 flex-shrink-0">
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <User className="h-6 w-6 text-primary" />
             Booking Details
@@ -55,16 +91,32 @@ export default function AdminBookingDetailModal({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[calc(90vh-120px)] pr-4">
+        {/* Scrollable Content - takes remaining space */}
+        <ScrollArea className="flex-1 px-6 min-h-0">
           {selectedBooking && (
-            <div className="space-y-6">
+            <div className="space-y-6 py-2">
+              {/* Booking Type Badge */}
+              <div className="flex justify-end">
+                <Badge
+                  variant={
+                    selectedBooking.bookingType === "custom"
+                      ? "default"
+                      : "secondary"
+                  }
+                >
+                  {selectedBooking.bookingType === "custom"
+                    ? "Custom Package"
+                    : "Standard Package"}
+                </Badge>
+              </div>
+
               {/* Client Information Section */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <User className="h-5 w-5 text-primary" />
                   Client Information
                 </h3>
-                <div className="grid grid-cols-1 gap-4 bg-muted/30 p-4 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg">
                   <div className="flex items-center gap-2 text-sm">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Name:</span>
@@ -122,9 +174,12 @@ export default function AdminBookingDetailModal({
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-primary">
-                        {formatPrice(
-                          selectedBooking.selectedPackage.price,
-                        )}
+                        {selectedBooking.packageModel ===
+                          "CustomPackage" && customTotal
+                          ? formatPrice(customTotal)
+                          : formatPrice(
+                              selectedBooking.selectedPackage.price,
+                            )}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         per {selectedBooking.selectedPackage.period}
@@ -132,31 +187,102 @@ export default function AdminBookingDetailModal({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    {selectedBooking.selectedPackage.services.map(
-                      (service: IPackageService, index: number) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-2 text-sm"
-                        >
-                          {service.included ? (
-                            <CheckCircle2 className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <XCircle className="h-4 w-4 text-muted-foreground" />
-                          )}
-                          <span
-                            className={
+                  {/* Services List - Handles both standard and custom services */}
+                  <div className="mt-4">
+                    <h5 className="text-sm font-medium mb-3">
+                      Included Services:
+                    </h5>
+                    <div className="grid grid-cols-1 gap-3">
+                      {selectedBooking.selectedPackage.services.map(
+                        (
+                          service:
+                            | IPackageService
+                            | ICustomPackageService,
+                          index: number,
+                        ) => (
+                          <div
+                            key={index}
+                            className={`flex items-center justify-between p-3 rounded-lg border ${
                               service.included
-                                ? ""
-                                : "text-muted-foreground"
-                            }
+                                ? "bg-green-50/50 border-green-200"
+                                : "bg-muted/30 border-muted opacity-60"
+                            }`}
                           >
-                            {service.name}
+                            <div className="flex items-center gap-2">
+                              {service.included ? (
+                                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                              ) : (
+                                <XCircle className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              <span
+                                className={
+                                  service.included
+                                    ? "font-medium"
+                                    : "text-muted-foreground"
+                                }
+                              >
+                                {service.name}
+                              </span>
+                            </div>
+
+                            {/* Custom service details with price and quantity */}
+                            {isCustomService(service) &&
+                              service.included && (
+                                <div className="flex items-center gap-3 text-sm">
+                                  <div className="flex items-center gap-1 text-muted-foreground">
+                                    <Hash className="h-3.5 w-3.5" />
+                                    <span>x{service.quantity}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 font-medium">
+                                    <DollarSign className="h-3.5 w-3.5" />
+                                    <span>
+                                      {formatPrice(service.price)}
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    ={" "}
+                                    {formatPrice(
+                                      service.price *
+                                        service.quantity,
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                            {/* Simple included indicator for standard services */}
+                            {!isCustomService(service) &&
+                              service.included && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs bg-green-50"
+                                >
+                                  Included
+                                </Badge>
+                              )}
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Package Summary for Custom Packages */}
+                  {selectedBooking.packageModel === "CustomPackage" &&
+                    customTotal && (
+                      <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold">
+                            Package Total:
+                          </span>
+                          <span className="text-xl font-bold text-primary">
+                            {formatPrice(customTotal)}
                           </span>
                         </div>
-                      ),
+                        <p className="text-xs text-muted-foreground mt-1">
+                          *Custom package with selected services and
+                          quantities
+                        </p>
+                      </div>
                     )}
-                  </div>
                 </div>
               </div>
 
@@ -178,12 +304,12 @@ export default function AdminBookingDetailModal({
               <Separator />
 
               {/* Booking Metadata */}
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 pb-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
                   Booking Information
                 </h3>
-                <div className="grid grid-cols-1 gap-4 bg-muted/30 p-4 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg">
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Booked On:</span>
@@ -199,6 +325,15 @@ export default function AdminBookingDetailModal({
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
+                    <Package className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">
+                      Package Model:
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      {selectedBooking.packageModel}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Last Updated:</span>
                     <span>
@@ -211,7 +346,8 @@ export default function AdminBookingDetailModal({
           )}
         </ScrollArea>
 
-        <div className="flex justify-end gap-2 mt-4">
+        {/* Fixed Footer */}
+        <div className="flex justify-end gap-2 border-t px-6 py-4 flex-shrink-0">
           <Button
             variant="outline"
             onClick={() => setIsModalOpen(false)}

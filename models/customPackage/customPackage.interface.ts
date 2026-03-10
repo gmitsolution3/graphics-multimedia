@@ -3,6 +3,7 @@ import { Document } from "mongoose";
 export interface ICustomPackageService {
   name: string;
   price: number;
+  quantity: number;
   included: boolean;
 }
 

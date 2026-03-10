@@ -2,6 +2,12 @@ export interface IPackageService {
   name: string;
   included: boolean;
 }
+export interface ICustomPackageService {
+  name: string;
+  price: number;
+  quantity: number;
+  included: boolean;
+}
 
 export interface IService {
   _id: string;
@@ -22,4 +28,8 @@ export interface IPackage {
   popular: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ICustomPackage extends IPackage {
+  services: ICustomPackageService[];
 }

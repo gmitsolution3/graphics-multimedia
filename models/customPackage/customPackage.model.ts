@@ -11,7 +11,10 @@ const CustomPackageServiceSchema = new Schema(
     price: {
       type: Number,
       required: true,
-      default: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
     },
     included: {
       type: Boolean,
