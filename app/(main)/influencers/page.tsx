@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Play, Calendar, Clock, ChevronLeft, ChevronRight } from "lucide-react";
@@ -23,6 +23,9 @@ export default function InfluencersPage() {
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+  
+  // Create a ref for the section header to scroll to
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useGetInfluencers(page, limit);
 
@@ -55,14 +58,31 @@ export default function InfluencersPage() {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Scroll to the header with a small delay to ensure the page change has occurred
+    setTimeout(() => {
+      if (headerRef.current) {
+        const yOffset = -100; // Offset to account for any fixed headers
+        const y = headerRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 100);
   };
+
+  // Alternative: Use useEffect to scroll when page changes
+  useEffect(() => {
+    if (!isLoading && headerRef.current) {
+      const yOffset = -100;
+      const y = headerRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, [page, isLoading]);
 
   return (
     <section className="py-20 lg:py-28 bg-card min-h-screen">
       <div className="container mx-auto px-4">
-        {/* Minimal Section Header */}
-        <div className="max-w-3xl mx-auto mb-16 lg:mb-20 text-center">
+        {/* Minimal Section Header - Add ref here */}
+        <div ref={headerRef} className="max-w-3xl mx-auto mb-16 lg:mb-20 text-center">
           <div className="inline-block">
             <div className="w-12 h-0.5 bg-primary mx-auto mb-6"></div>
           </div>
