@@ -157,7 +157,7 @@ export default function AdminBookingDetailModal({
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <h4 className="text-xl font-bold">
-                          {selectedBooking.selectedPackage.name}
+                          Custom Package
                         </h4>
                         {selectedBooking.selectedPackage.popular && (
                           <Badge
@@ -228,17 +228,12 @@ export default function AdminBookingDetailModal({
                             {/* Custom service details with price and quantity */}
                             {isCustomService(service) &&
                               service.included && (
-                                <div className="flex items-center gap-3 text-sm">
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <span>
-                                      {formatPrice(service.price)}
-                                    </span>
+                                <div className="flex flex-col items-end gap-0.5 text-right">
+                                  <div className="text-sm text-muted-foreground">
+                                    {formatPrice(service.price)} ×{" "}
+                                    {service.quantity} Item
                                   </div>
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <span>X {service.quantity}</span>
-                                  </div>
-                                  <div className="font-medium">
-                                    ={" "}
+                                  <div className="font-medium text-primary">
                                     {formatPrice(
                                       service.price *
                                         service.quantity,
