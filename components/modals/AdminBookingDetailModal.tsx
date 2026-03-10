@@ -116,8 +116,8 @@ export default function AdminBookingDetailModal({
                   <User className="h-5 w-5 text-primary" />
                   Client Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm">
+                <div className="grid grid-cols-1 gap-2 bg-muted/30 p-4 rounded-lg">
+                  <div className="flex items-center gap-1 text-sm">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Name:</span>
                     <span>{selectedBooking.name}</span>
@@ -229,17 +229,15 @@ export default function AdminBookingDetailModal({
                             {isCustomService(service) &&
                               service.included && (
                                 <div className="flex items-center gap-3 text-sm">
-                                  <div className="flex items-center gap-1 text-muted-foreground">
-                                    <Hash className="h-3.5 w-3.5" />
-                                    <span>x{service.quantity}</span>
-                                  </div>
-                                  <div className="flex items-center gap-1 font-medium">
-                                    <DollarSign className="h-3.5 w-3.5" />
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                     <span>
                                       {formatPrice(service.price)}
                                     </span>
                                   </div>
-                                  <div className="text-xs text-muted-foreground">
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                    <span>X {service.quantity}</span>
+                                  </div>
+                                  <div className="font-medium">
                                     ={" "}
                                     {formatPrice(
                                       service.price *
@@ -309,7 +307,7 @@ export default function AdminBookingDetailModal({
                   <Clock className="h-5 w-5 text-primary" />
                   Booking Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg">
+                <div className="grid grid-cols-1 gap-2 bg-muted/30 p-4 rounded-lg">
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Booked On:</span>
