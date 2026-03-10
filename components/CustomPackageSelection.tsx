@@ -101,13 +101,13 @@ export default function CustomPackageSelection({
                       {service.description}
                     </p>
 
-                    {/* Quantity Selector - Only shown when service is selected */}
+                    {/* Quantity Selector - Larger size */}
                     {isSelected && (
-                      <div className="pl-6 mt-3 flex items-center gap-3">
-                        <span className="text-xs opacity-40">
+                      <div className="pl-6 mt-4 flex items-center gap-4">
+                        <span className="text-sm opacity-40">
                           Quantity:
                         </span>
-                        <div className="flex items-center border border-border/40">
+                        <div className="flex items-center border border-border/40 rounded-md">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -116,12 +116,12 @@ export default function CustomPackageSelection({
                                 quantity - 1,
                               );
                             }}
-                            className="p-1 hover:bg-primary/5 transition-colors"
+                            className="p-2 hover:bg-primary/5 transition-colors"
                             disabled={quantity <= 1}
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-8 text-center text-xs">
+                          <span className="w-10 text-center text-sm font-medium">
                             {quantity}
                           </span>
                           <button
@@ -132,21 +132,21 @@ export default function CustomPackageSelection({
                                 quantity + 1,
                               );
                             }}
-                            className="p-1 hover:bg-primary/5 transition-colors"
+                            className="p-2 hover:bg-primary/5 transition-colors"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
-                        <span className="text-xs opacity-60">
+                        <span className="text-sm opacity-60">
                           ${service.price} each
                         </span>
-                        <span className="text-xs font-medium ml-auto">
+                        <span className="text-sm font-medium ml-auto">
                           Total: ${service.price * quantity}
                         </span>
                       </div>
                     )}
                   </div>
-                  <span className="text-sm font-light ml-4">
+                  <span className="text-base font-light ml-4">
                     ${service.price}
                   </span>
                 </div>
