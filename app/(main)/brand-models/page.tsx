@@ -172,7 +172,7 @@ export default function BrandModelPage() {
                 <div className="flex flex-wrap gap-4">
                   <Button
                     onClick={() => handleDemoVideoClick(model)}
-                    className="relative overflow-hidden group/btn bg-transparent border border-border/60 hover:border-primary/50 text-foreground uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500"
+                    className="relative overflow-hidden group/btn bg-transparent border border-border/60 hover:border-primary/50 text-foreground hover:text-white uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500"
                   >
                     <span className="relative z-10 flex items-center gap-2">
                       <Play className="w-3 h-3" />
@@ -183,7 +183,7 @@ export default function BrandModelPage() {
 
                   <Button
                     onClick={() => handleBookingClick(model)}
-                    className="relative overflow-hidden group/btn bg-transparent border border-primary/30 hover:border-primary text-foreground uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500"
+                    className="relative overflow-hidden group/btn bg-transparent border border-primary/30 hover:border-primary text-foreground hover:text-white uppercase text-xs tracking-[0.2em] px-6 py-5 rounded-none transition-all duration-500"
                   >
                     <span className="relative z-10 flex items-center gap-2">
                       <Calendar className="w-3 h-3" />
