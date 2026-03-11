@@ -115,6 +115,7 @@ export default function AdminInfluencerAddModal({
           (key) =>
             typeof key === "string" && key.startsWith("/influencers"),
         );
+        
         addForm.reset();
       }
     } catch (error: any) {

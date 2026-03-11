@@ -9,7 +9,7 @@ export function usePatch(url: string) {
   );
 
   const revalidate = () => {
-    mutate(url);
+    mutate((key) => typeof key === "string" && key.startsWith(url));
   };
 
   return {

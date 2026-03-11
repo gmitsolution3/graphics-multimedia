@@ -24,13 +24,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -48,7 +41,6 @@ import {
   PackageX,
   PlusCircle,
   Image as ImageIcon,
-  X,
   Video,
 } from "lucide-react";
 
@@ -78,7 +70,7 @@ export default function InfluencersPage() {
     null,
   );
 
-  const { deleteItem } = useDelete("/influencers");
+  const { deleteItem, revalidate } = useDelete("/influencers");
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -100,11 +92,7 @@ export default function InfluencersPage() {
             icon: "success",
           });
 
-          mutate(
-            (key) =>
-              typeof key === "string" &&
-              key.startsWith("/influencers"),
-          );
+          revalidate();
         }
       }
     });
@@ -124,17 +112,17 @@ export default function InfluencersPage() {
     // Show only the first pricing option with count of additional options
     const firstPrice = pricing[0];
     const additionalCount = pricing.length - 1;
-    
+
     const baseText = `${firstPrice.duration}: ${formatPrice(firstPrice.price)}`;
-    return additionalCount > 0 
-      ? `${baseText} +${additionalCount} more` 
+    return additionalCount > 0
+      ? `${baseText} +${additionalCount} more`
       : baseText;
   };
 
   const truncateText = (text: string, maxLength: number) => {
     if (!text) return "";
-    return text.length > maxLength 
-      ? `${text.substring(0, maxLength)}...` 
+    return text.length > maxLength
+      ? `${text.substring(0, maxLength)}...`
       : text;
   };
 
@@ -187,7 +175,9 @@ export default function InfluencersPage() {
             </TooltipTrigger>
             <TooltipContent>
               <p className="font-semibold">{row.original.name}</p>
-              <p className="text-xs text-muted-foreground">{row.original.designation}</p>
+              <p className="text-xs text-muted-foreground">
+                {row.original.designation}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -224,7 +214,7 @@ export default function InfluencersPage() {
       cell: ({ row }) => {
         const pricing = row.original.pricing;
         const formattedPricing = formatPricing(pricing);
-        
+
         return (
           <TooltipProvider>
             <Tooltip>
@@ -236,11 +226,18 @@ export default function InfluencersPage() {
               {pricing?.length > 0 && (
                 <TooltipContent className="max-w-sm">
                   <div className="space-y-1">
-                    <p className="font-semibold mb-2">All Pricing Options:</p>
+                    <p className="font-semibold mb-2">
+                      All Pricing Options:
+                    </p>
                     {pricing.map((p, index) => (
-                      <div key={index} className="flex justify-between gap-4 text-sm">
+                      <div
+                        key={index}
+                        className="flex justify-between gap-4 text-sm"
+                      >
                         <span>{p.duration}:</span>
-                        <span className="font-medium">{formatPrice(p.price)}</span>
+                        <span className="font-medium">
+                          {formatPrice(p.price)}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -297,8 +294,14 @@ export default function InfluencersPage() {
             </TooltipTrigger>
             <TooltipContent>
               <p>Full ID: {row.original._id}</p>
-              <p>Created: {new Date(row.original.createdAt).toLocaleString()}</p>
-              <p>Updated: {new Date(row.original.updatedAt).toLocaleString()}</p>
+              <p>
+                Created:{" "}
+                {new Date(row.original.createdAt).toLocaleString()}
+              </p>
+              <p>
+                Updated:{" "}
+                {new Date(row.original.updatedAt).toLocaleString()}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

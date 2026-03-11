@@ -113,10 +113,7 @@ export default function AdminInfluencerEditModal({
         notify.success(res.message);
         setIsEditModalOpen(false);
 
-        mutate(
-          (key) =>
-            typeof key === "string" && key.startsWith("/influencers"),
-        );
+        revalidate();
         editForm.reset();
       }
     } catch (error: any) {
