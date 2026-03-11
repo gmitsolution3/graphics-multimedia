@@ -9,8 +9,10 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import Logo from "@/assets/logo.png";
+import FooterLogo from "@/assets/logoWhite.png"
 import Image from "next/image";
+import { getServices } from '@/services/servicesService';
+import { IService } from "@/types";
 
 const footerLinks = {
   services: [
@@ -51,7 +53,10 @@ const socialLinks = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+
+  const {data: services} = await getServices();
+
   return (
     <footer className="bg-foreground text-background border-t border-border">
       <div className="container mx-auto px-4 py-16 lg:py-20">
@@ -62,10 +67,10 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2">
               <div className="w-24">
                 <Image
-                  src={Logo}
+                  src={FooterLogo}
                   height={300}
                   width={300}
-                  alt="Header Logo"
+                  alt="Footer Logo"
                 />
               </div>
             </Link>
@@ -77,11 +82,11 @@ export default function Footer() {
             {/* Contact Info - Minimal styling */}
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-sm opacity-60 group hover:opacity-100 transition-opacity">
-                <Mail className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
+                <Mail className="w-4 h-4 text-white transition-colors" />
                 <span>graphicsmultimedia.net</span>
               </div>
               <div className="flex items-center gap-3 text-sm opacity-60 group hover:opacity-100 transition-opacity">
-                <Phone className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
+                <Phone className="w-4 h-4 text-white transition-colors" />
                 <div>
                   <a href="tel:+8801898796506">+880 1898-796506</a>{" "}
                   <br />
@@ -89,7 +94,7 @@ export default function Footer() {
                 </div>
               </div>
               <div className="flex items-center gap-3 text-sm opacity-60 group hover:opacity-100 transition-opacity">
-                <MapPin className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
+                <MapPin className="w-4 h-4 text-white transition-colors" />
                 <span>
                   2nd Floor, House-1, Road-1, Section-7, Mirpur-11,
                   Dhaka-1216
@@ -107,17 +112,16 @@ export default function Footer() {
               Services
             </h4>
             <ul className="space-y-3">
-              {footerLinks.services.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
+              {services.map((service: IService) => (
+                <li key={service._id}>
+                  <div
                     className="text-sm opacity-60 hover:opacity-100 hover:text-primary transition-all duration-300 inline-block group"
                   >
                     <span className="flex items-center gap-2">
-                      {link.label}
+                      {service.name}
                       <span className="w-4 h-px bg-primary/0 group-hover:bg-primary/60 group-hover:w-6 transition-all duration-300"></span>
                     </span>
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -173,7 +177,7 @@ export default function Footer() {
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="opacity-60 hover:opacity-100 text-gray-200 transition-all duration-300 font-medium"
+              className="opacity-60 hover:opacity-100 text-white transition-all duration-300 font-medium"
             >
               gm group
             </a>
