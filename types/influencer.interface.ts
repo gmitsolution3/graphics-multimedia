@@ -14,3 +14,17 @@ export interface IInfluencer {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IBookedInfluencer {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  projectDetails: string;
+  influencer: IInfluencer;
+  duration: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
