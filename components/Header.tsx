@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Mail, ChevronDown } from "lucide-react";
 import Logo from "@/assets/logo.png";
 import Image from "next/image";
-import { getSession } from "@/lib/auth-client";
 
 const navItems = [
   { label: "Home", href: "/" },
