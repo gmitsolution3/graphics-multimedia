@@ -32,6 +32,11 @@ import {
   Clock,
 } from "lucide-react";
 
+import { IInfluencer, IInfluencerPricing } from "@/types";
+
+import { usePost } from "@/hooks/swr/usePost";
+import { notify } from "./../../utils/toast";
+
 // Define the form schema with Zod - all fields required
 const bookingFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -49,25 +54,10 @@ const bookingFormSchema = z.object({
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
-interface PricingOption {
-  duration: string;
-  price: number;
-}
-
-interface Influencer {
-  id: number;
-  name: string;
-  designation: string;
-  bio: string;
-  image: any;
-  demoVideo: string;
-  pricing: PricingOption[];
-}
-
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  influencer: Influencer;
+  influencer: IInfluencer;
 }
 
 export default function InfluencerBookingModal({
@@ -91,21 +81,26 @@ export default function InfluencerBookingModal({
     },
   });
 
+  const { createItem } = usePost("/influencer-bookings");
+
   const selectedPrice =
     influencer.pricing.find((p) => p.duration === selectedDuration)
       ?.price || 0;
 
-  const onSubmit = (data: BookingFormValues) => {
-    console.log({
+  const onSubmit = async (data: BookingFormValues) => {
+    const res = await createItem({
       ...data,
-      influencer: influencer.name,
+      influencer: influencer._id,
       duration: selectedDuration,
       price: selectedPrice,
     });
 
-    // Handle booking submission here
-    onClose();
-    form.reset(); // Reset form after successful submission
+    if (res.success) {
+      notify.success(res.message);
+
+      onClose();
+      form.reset();
+    }
   };
 
   return (
@@ -117,7 +112,9 @@ export default function InfluencerBookingModal({
             <DialogTitle className="text-sm tracking-[0.2em] uppercase opacity-60 mb-1">
               Book {influencer.name}
             </DialogTitle>
-            <p className="text-xs opacity-40">{influencer.designation}</p>
+            <p className="text-xs opacity-40">
+              {influencer.designation}
+            </p>
           </div>
           <Button
             variant="ghost"
@@ -146,7 +143,9 @@ export default function InfluencerBookingModal({
                 />
               </div>
               <div>
-                <p className="text-sm font-light">{influencer.name}</p>
+                <p className="text-sm font-light">
+                  {influencer.name}
+                </p>
                 <p className="text-xs opacity-40">
                   {influencer.designation}
                 </p>

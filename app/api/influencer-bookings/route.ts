@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: true,
+        message: "Influencer booked successfully.",
         data: booking,
       },
       { status: 201 },

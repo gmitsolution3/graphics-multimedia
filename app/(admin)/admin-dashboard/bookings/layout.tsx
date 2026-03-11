@@ -20,6 +20,10 @@ export default function BookingsLayout({
       name: "Custom Bookings",
       href: "/admin-dashboard/bookings/custom",
     },
+    {
+      name: "Influencer Bookings",
+      href: "/admin-dashboard/bookings/influencer",
+    },
   ];
 
   return (
