@@ -30,6 +30,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import {
   ColumnDef,
@@ -115,21 +121,28 @@ export default function InfluencersPage() {
     if (!pricing || pricing.length === 0)
       return "No pricing available";
 
-    // Show the first 2 pricing options as a preview
-    const pricingPreview = pricing
-      .slice(0, 2)
-      .map((p) => `${p.duration}: ${formatPrice(p.price)}`)
-      .join(", ");
-    return pricing.length > 2
-      ? `${pricingPreview} +${pricing.length - 2} more`
-      : pricingPreview;
+    // Show only the first pricing option with count of additional options
+    const firstPrice = pricing[0];
+    const additionalCount = pricing.length - 1;
+    
+    const baseText = `${firstPrice.duration}: ${formatPrice(firstPrice.price)}`;
+    return additionalCount > 0 
+      ? `${baseText} +${additionalCount} more` 
+      : baseText;
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (!text) return "";
+    return text.length > maxLength 
+      ? `${text.substring(0, maxLength)}...` 
+      : text;
   };
 
   const columns: ColumnDef<IInfluencer>[] = [
     {
       accessorKey: "image",
       header: "Image",
-      size: 10,
+      size: 8,
       cell: ({ row }) => {
         const imageUrl = row.original.image;
         return (
@@ -158,46 +171,90 @@ export default function InfluencersPage() {
     {
       accessorKey: "name",
       header: () => <div className="text-left">Name</div>,
-      size: 15,
+      size: 12,
       cell: ({ row }) => (
-        <div>
-          <div className="font-semibold text-lg">
-            {(row.getValue("name") as string).slice(0, 15)}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {row.original.designation}
-          </div>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="cursor-help">
+                <div className="font-semibold text-base">
+                  {truncateText(row.original.name, 20)}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {truncateText(row.original.designation, 25)}
+                </div>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="font-semibold">{row.original.name}</p>
+              <p className="text-xs text-muted-foreground">{row.original.designation}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       ),
     },
     {
       accessorKey: "bio",
       header: "Bio",
-      size: 20,
-      cell: ({ row }) => (
-        <div>
-          <div className="text-sm text-gray-600 line-clamp-2">
-            {row.getValue("bio") || "No bio provided"}
-          </div>
-        </div>
-      ),
+      size: 18,
+      cell: ({ row }) => {
+        const bio = row.original.bio || "No bio provided";
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-sm text-gray-600 line-clamp-2 cursor-help">
+                  {truncateText(bio, 60)}
+                </div>
+              </TooltipTrigger>
+              {bio.length > 60 && (
+                <TooltipContent className="max-w-xs">
+                  <p>{bio}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
     },
     {
       accessorKey: "pricing",
       header: "Pricing",
-      size: 20,
-      cell: ({ row }) => (
-        <div>
-          <div className="text-sm font-medium">
-            {formatPricing(row.original.pricing)}
-          </div>
-        </div>
-      ),
+      size: 15,
+      cell: ({ row }) => {
+        const pricing = row.original.pricing;
+        const formattedPricing = formatPricing(pricing);
+        
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-sm font-medium cursor-help">
+                  {truncateText(formattedPricing, 25)}
+                </div>
+              </TooltipTrigger>
+              {pricing?.length > 0 && (
+                <TooltipContent className="max-w-sm">
+                  <div className="space-y-1">
+                    <p className="font-semibold mb-2">All Pricing Options:</p>
+                    {pricing.map((p, index) => (
+                      <div key={index} className="flex justify-between gap-4 text-sm">
+                        <span>{p.duration}:</span>
+                        <span className="font-medium">{formatPrice(p.price)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
     },
     {
       accessorKey: "demoVideo",
-      header: "Demo Video",
-      size: 10,
+      header: "Demo",
+      size: 8,
       cell: ({ row }) => {
         const videoUrl = row.original.demoVideo;
         return (
@@ -210,7 +267,7 @@ export default function InfluencersPage() {
                 onClick={() => setPreviewVideo(videoUrl)}
               >
                 <Video className="h-3.5 w-3.5 mr-1" />
-                Watch Demo
+                Watch
               </Button>
             ) : (
               <span className="text-xs text-muted-foreground">
@@ -224,22 +281,33 @@ export default function InfluencersPage() {
     {
       accessorKey: "createdAt",
       header: "Created",
-      size: 15,
+      size: 12,
       cell: ({ row }) => (
-        <div>
-          <div className="text-sm font-medium">
-            {formatDate(row.getValue("createdAt"))}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            ID: {row.original._id.slice(-6)}
-          </div>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="cursor-help">
+                <div className="text-sm font-medium">
+                  {formatDate(row.getValue("createdAt"))}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  ID: {row.original._id.slice(-6)}
+                </div>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Full ID: {row.original._id}</p>
+              <p>Created: {new Date(row.original.createdAt).toLocaleString()}</p>
+              <p>Updated: {new Date(row.original.updatedAt).toLocaleString()}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       ),
     },
     {
       id: "actions",
-      header: "Action",
-      size: 10,
+      header: "",
+      size: 7,
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <DropdownMenu>
@@ -317,7 +385,7 @@ export default function InfluencersPage() {
                       <TableHead
                         key={header.id}
                         style={{ width: `${header.getSize()}%` }}
-                        className="h-11 px-6 text-xs font-medium text-muted-foreground uppercase tracking-wider"
+                        className="h-11 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap"
                       >
                         {header.isPlaceholder
                           ? null
@@ -344,7 +412,7 @@ export default function InfluencersPage() {
                           style={{
                             width: `${cell.column.getSize()}%`,
                           }}
-                          className="px-6 py-5"
+                          className="px-4 py-4 truncate"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
