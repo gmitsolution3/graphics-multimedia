@@ -2,7 +2,6 @@
 
 import { Bell, Search, Moon, Sun, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Avatar,
@@ -18,14 +17,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useAppSession, logOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import ProfileImage from "@/assets/profileImage.png";
 
 export function DashboardHeader() {
-  const [isDark, setIsDark] = useState(false);
+  const { data } = useAppSession();
+  const router = useRouter();
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
+  const user = data?.user;
+
+  const handleLogout = async () => {
+    const res = await logOut();
+
+    if (res?.data?.success) {
+      router.replace("/login");
+    }
   };
 
   return (
@@ -35,16 +42,6 @@ export function DashboardHeader() {
           <Menu className="h-5 w-5" />
         </SidebarTrigger>
         <SidebarTrigger className="hidden lg:flex" />
-
-        <div className="hidden md:block">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search patients, records..."
-              className="w-64 bg-muted/50 pl-10 lg:w-80"
-            />
-          </div>
-        </div>
       </div>
 
       <div className="flex items-center gap-2 lg:gap-4">
@@ -96,24 +93,32 @@ export function DashboardHeader() {
               className="relative flex items-center gap-2 px-2"
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop&crop=face" />
+                <AvatarImage
+                  src={
+                    (user?.image as string) ||
+                    (typeof ProfileImage === "string"
+                      ? ProfileImage
+                      : ProfileImage.src)
+                  }
+                />
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  DR
+                  AD
                 </AvatarFallback>
               </Avatar>
               <span className="hidden text-sm font-medium lg:block">
-                Dr. Wilson
+                {user?.name}
               </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Help & Support</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/admin-dashboard/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-destructive"
+            >
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

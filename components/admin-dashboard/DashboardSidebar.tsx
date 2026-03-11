@@ -24,24 +24,26 @@ import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/assets/logo.png";
+import ProfileImage from "@/assets/profileImage.png";
 
 import {
   mainMenuItems,
   settingsItems,
 } from "./admin-dashboard-menuitems";
 
-import { getSession, logOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+
+import { useAppSession, logOut } from "@/lib/auth-client";
 
 export function DashboardSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
-  const { data: session } = getSession();
-
-  const user = session?.user;
-
   const router = useRouter();
+
+  const { data } = useAppSession();
+
+  const user = data?.user;
 
   const handleLogout = async () => {
     const res = await logOut();
@@ -124,9 +126,16 @@ export function DashboardSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-4">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 shrink-0">
-            <AvatarImage src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop&crop=face" />
+            <AvatarImage
+              src={
+                (user?.image as string) ||
+                (typeof ProfileImage === "string"
+                  ? ProfileImage
+                  : ProfileImage.src)
+              }
+            />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              DR
+              AD
             </AvatarFallback>
           </Avatar>
           {!isCollapsed && (
@@ -135,8 +144,7 @@ export function DashboardSidebar() {
                 {user?.email}
               </span>
               <span className="truncate text-xs text-muted-foreground">
-                {/* {user?.role} */}
-                Admin
+                {user?.role}
               </span>
             </div>
           )}

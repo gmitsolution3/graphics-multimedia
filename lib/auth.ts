@@ -18,6 +18,18 @@ export const auth = betterAuth({
         defaultValue: "user",
         input: false,
       },
+
+      phone: {
+        type: "string",
+        defaultValue: "",
+        input: true,
+      },
+
+      image: {
+        type: "string",
+        defaultValue: "",
+        input: true,
+      },
     },
   },
 
@@ -25,8 +37,14 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: "string",
-        defaultValue: "user",
-        input: false,
+      },
+
+      phone: {
+        type: "string",
+      },
+
+      image: {
+        type: "string",
       },
     },
   },
