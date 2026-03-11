@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useGetServices } from "@/hooks/swr/useGetServices";
+import { useGetInfluencers } from "@/hooks/swr/useGetInfluencers";
 import { useDelete } from "@/hooks/swr/useDelete";
 import Image from "next/image";
 
@@ -29,7 +29,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 import {
@@ -38,25 +37,41 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal, PackageX, PlusCircle, Image as ImageIcon, X } from "lucide-react";
+import {
+  MoreHorizontal,
+  PackageX,
+  PlusCircle,
+  Image as ImageIcon,
+  X,
+  Video,
+} from "lucide-react";
 
-import { IService } from "@/types";
+import { IInfluencer } from "@/types";
 import { formatDate, formatPrice } from "@/utils";
 import Swal from "sweetalert2";
-import ServicesTableLoader from "@/components/loaders/ServiceTableLoader";
-import AdminServiceAddModal from "@/components/modals/AdminServiceAddModal";
-import AdminServiceEditModal from "@/components/modals/AdminServiceEditModal";
+import InfluencersTableLoader from "@/components/loaders/InfluencerTableLoader";
+// import AdminInfluencerAddModal from "@/components/modals/AdminInfluencerAddModal";
+// import AdminInfluencerEditModal from "@/components/modals/AdminInfluencerEditModal";
+import AdminInfluencerImagePreviewModal from "@/components/modals/AdminInfluencerImagePreviewModal";
+import AdminInfluencerVideoPreviewModal from "@/components/modals/AdminInfluencerVideoPreviewModal";
+import AdminInfluencerAddModal from '@/components/modals/AdminInfluencerAddModal';
 
-export default function ServicesPage() {
-  const { data, isLoading } = useGetServices();
-  
-  const services: IService[] = data?.data || [];
+export default function InfluencersPage() {
+  const { data, isLoading } = useGetInfluencers(0, 0);
+
+  const influencers: IInfluencer[] = data?.data || [];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<IService | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedInfluencer, setSelectedInfluencer] =
+    useState<IInfluencer | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    null,
+  );
+  const [previewVideo, setPreviewVideo] = useState<string | null>(
+    null,
+  );
 
-  const { deleteItem, revalidate } = useDelete("/services");
+  const { deleteItem, revalidate } = useDelete("/influencers");
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -84,23 +99,39 @@ export default function ServicesPage() {
     });
   };
 
-  const handleEditClick = (service: IService) => {
-    setSelectedService(service);
+  const handleEditClick = (influencer: IInfluencer) => {
+    setSelectedInfluencer(influencer);
     setIsEditModalOpen(true);
   };
 
-  const columns: ColumnDef<IService>[] = [
+  const formatPricing = (
+    pricing: { duration: string; price: number }[],
+  ) => {
+    if (!pricing || pricing.length === 0)
+      return "No pricing available";
+
+    // Show the first 2 pricing options as a preview
+    const pricingPreview = pricing
+      .slice(0, 2)
+      .map((p) => `${p.duration}: ${formatPrice(p.price)}`)
+      .join(", ");
+    return pricing.length > 2
+      ? `${pricingPreview} +${pricing.length - 2} more`
+      : pricingPreview;
+  };
+
+  const columns: ColumnDef<IInfluencer>[] = [
     {
       accessorKey: "image",
       header: "Image",
-      size: 15,
+      size: 10,
       cell: ({ row }) => {
         const imageUrl = row.original.image;
         return (
           <div>
             {imageUrl ? (
-              <div 
-                className="relative h-12 w-12 rounded-md overflow-hidden cursor-pointer border border-muted hover:opacity-80 transition-opacity"
+              <div
+                className="relative h-12 w-12 rounded-full overflow-hidden cursor-pointer border border-muted hover:opacity-80 transition-opacity"
                 onClick={() => setPreviewImage(imageUrl)}
               >
                 <Image
@@ -111,7 +142,7 @@ export default function ServicesPage() {
                 />
               </div>
             ) : (
-              <div className="h-12 w-12 rounded-md bg-muted flex items-center justify-center">
+              <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
                 <ImageIcon className="h-5 w-5 text-muted-foreground" />
               </div>
             )}
@@ -122,43 +153,73 @@ export default function ServicesPage() {
     {
       accessorKey: "name",
       header: () => <div className="text-left">Name</div>,
-      size: 20,
+      size: 15,
       cell: ({ row }) => (
         <div>
           <div className="font-semibold text-lg">
             {row.getValue("name")}
           </div>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-      size: 15,
-      cell: ({ row }) => (
-        <div>
-          <div className="font-semibold text-lg">
-            {formatPrice(row.getValue("price"))}
+          <div className="text-xs text-muted-foreground">
+            {row.original.designation}
           </div>
         </div>
       ),
     },
     {
-      accessorKey: "description",
-      header: "Description",
-      size: 30,
+      accessorKey: "bio",
+      header: "Bio",
+      size: 20,
       cell: ({ row }) => (
         <div>
           <div className="text-sm text-gray-600 line-clamp-2">
-            {row.getValue("description") || "No description provided"}
+            {row.getValue("bio") || "No bio provided"}
           </div>
         </div>
       ),
+    },
+    {
+      accessorKey: "pricing",
+      header: "Pricing",
+      size: 20,
+      cell: ({ row }) => (
+        <div>
+          <div className="text-sm font-medium">
+            {formatPricing(row.original.pricing)}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "demoVideo",
+      header: "Demo Video",
+      size: 10,
+      cell: ({ row }) => {
+        const videoUrl = row.original.demoVideo;
+        return (
+          <div>
+            {videoUrl ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2 text-xs"
+                onClick={() => setPreviewVideo(videoUrl)}
+              >
+                <Video className="h-3.5 w-3.5 mr-1" />
+                Watch Demo
+              </Button>
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                No video
+              </span>
+            )}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "createdAt",
       header: "Created",
-      size: 20,
+      size: 15,
       cell: ({ row }) => (
         <div>
           <div className="text-sm font-medium">
@@ -173,7 +234,7 @@ export default function ServicesPage() {
     {
       id: "actions",
       header: "Action",
-      size: 15,
+      size: 10,
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <DropdownMenu>
@@ -188,7 +249,7 @@ export default function ServicesPage() {
               <DropdownMenuItem
                 onClick={() => handleEditClick(row.original)}
               >
-                Edit service
+                Edit influencer
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(row.original._id)}
@@ -203,25 +264,14 @@ export default function ServicesPage() {
     },
   ];
 
-  // Adjust column sizes to accommodate the new image column
-  const adjustedColumns = columns.map((col, index) => {
-    if (index === 0) return { ...col, size: 10 }; // Image column
-    if (index === 1) return { ...col, size: 18 }; // Name column (reduced)
-    if (index === 2) return { ...col, size: 12 }; // Price column (reduced)
-    if (index === 3) return { ...col, size: 25 }; // Description column (reduced)
-    if (index === 4) return { ...col, size: 20 }; // Created column (reduced)
-    if (index === 5) return { ...col, size: 15 }; // Actions column (same)
-    return col;
-  });
-
   const table = useReactTable({
-    data: services,
-    columns: adjustedColumns,
+    data: influencers,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   if (isLoading) {
-    return <ServicesTableLoader />;
+    return <InfluencersTableLoader />;
   }
 
   return (
@@ -231,10 +281,10 @@ export default function ServicesPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Services
+              Influencers
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5">
-              Manage your services and offerings
+              Manage your influencers and brand models
             </p>
           </div>
           <Button
@@ -243,7 +293,8 @@ export default function ServicesPage() {
               setIsAddModalOpen(true);
             }}
           >
-            Add New Service
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Add New Influencer
           </Button>
         </div>
 
@@ -307,11 +358,11 @@ export default function ServicesPage() {
                       <div className="text-center py-12 px-4 rounded-lg">
                         <PackageX className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          No Services Available
+                          No Influencers Available
                         </h3>
                         <p className="text-gray-600 mb-6">
-                          You need to create at least one service
-                          before creating a package.
+                          You haven&apos;t added any influencers yet.
+                          Get started by adding your first influencer.
                         </p>
                         <Button
                           onClick={() => {
@@ -319,7 +370,7 @@ export default function ServicesPage() {
                           }}
                         >
                           <PlusCircle className="h-4 w-4 mr-2" />
-                          Create New Service
+                          Add New Influencer
                         </Button>
                       </div>
                     </TableCell>
@@ -332,43 +383,26 @@ export default function ServicesPage() {
       </section>
 
       {/* Image Preview Modal */}
-      <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
-        <DialogContent className="sm:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Image Preview</DialogTitle>
-            <DialogDescription>
-              Full size preview of the service image
-            </DialogDescription>
-          </DialogHeader>
-          <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
-            {previewImage && (
-              <Image
-                src={previewImage}
-                alt="Service preview"
-                fill
-                className="object-contain"
-              />
-            )}
-          </div>
-          <Button
-            variant="outline"
-            className="absolute top-4 right-4"
-            onClick={() => setPreviewImage(null)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Service Modal */}
-      <AdminServiceEditModal
-        selectedService={selectedService}
-        isEditModalOpen={isEditModalOpen}
-        setIsEditModalOpen={setIsEditModalOpen}
+      <AdminInfluencerImagePreviewModal
+        previewImage={previewImage}
+        setPreviewImage={setPreviewImage}
       />
 
-      {/* Add New Service Modal */}
-      <AdminServiceAddModal
+      {/* Video Preview Modal */}
+      <AdminInfluencerVideoPreviewModal
+        previewVideo={previewVideo}
+        setPreviewVideo={setPreviewVideo}
+      />
+
+      {/* Edit Influencer Modal */}
+      {/* <AdminInfluencerEditModal
+        selectedInfluencer={selectedInfluencer}
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
+      /> */}
+
+      {/* Add New Influencer Modal */}
+      <AdminInfluencerAddModal
         isAddModalOpen={isAddModalOpen}
         setIsAddModalOpen={setIsAddModalOpen}
       />

@@ -24,6 +24,11 @@ export const mainMenuItems = [
     icon: FileSpreadsheet,
   },
   {
+    title: "Influencers",
+    url: "/admin-dashboard/influencers",
+    icon: FileSpreadsheet,
+  },
+  {
     title: "Bookings",
     url: "/admin-dashboard/bookings/regular",
     icon: BookCheck,
