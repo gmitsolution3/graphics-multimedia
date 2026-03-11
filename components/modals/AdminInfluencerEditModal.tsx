@@ -18,15 +18,16 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { Loader2, Plus, Trash2 } from "lucide-react";
 import { ImageUploader } from "@/components/image-uploader";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 
 import { useEffect, Dispatch, SetStateAction } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { usePost } from "@/hooks/swr/usePost";
-import { notify } from "@/utils/toast";
+import { IInfluencer } from "@/types";
+import { usePatch } from "@/hooks/swr/usePatch";
+import { notify } from "./../../utils/toast";
 import { mutate } from "swr";
 
 // Pricing schema for individual pricing items
@@ -64,17 +65,20 @@ const influencerFormSchema = z.object({
 type InfluencerFormValues = z.infer<typeof influencerFormSchema>;
 
 interface IModalProps {
-  isAddModalOpen: boolean;
-  setIsAddModalOpen: Dispatch<SetStateAction<boolean>>;
+  selectedInfluencer: IInfluencer | null;
+  isEditModalOpen: boolean;
+  setIsEditModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function AdminInfluencerAddModal({
-  isAddModalOpen,
-  setIsAddModalOpen,
+export default function AdminInfluencerEditModal({
+  selectedInfluencer,
+  isEditModalOpen,
+  setIsEditModalOpen,
 }: IModalProps) {
-  const { createItem, isCreating } = usePost("/influencers");
+  const { updateItem, isUpdating, revalidate } =
+    usePatch("/influencers");
 
-  const addForm = useForm<InfluencerFormValues>({
+  const editForm = useForm<InfluencerFormValues>({
     resolver: zodResolver(influencerFormSchema),
     defaultValues: {
       name: "",
@@ -82,77 +86,73 @@ export default function AdminInfluencerAddModal({
       bio: "",
       image: "",
       demoVideo: "",
-      pricing: [
-        { duration: "30 sec", price: 3000 },
-        { duration: "60 sec", price: 5000 },
-        { duration: "2 min", price: 7000 },
-        { duration: "5 min", price: 10000 },
-      ],
+      pricing: [{ duration: "", price: 0 }],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
-    control: addForm.control,
+    control: editForm.control,
     name: "pricing",
   });
 
-  const onAddSubmit = async (values: InfluencerFormValues) => {
+  const onEditSubmit = async (values: InfluencerFormValues) => {
     try {
-      const res = await createItem({
-        name: values.name,
-        designation: values.designation,
-        bio: values.bio,
-        image: values.image,
-        demoVideo: values.demoVideo,
-        pricing: values.pricing,
+      const res = await updateItem({
+        id: selectedInfluencer?._id as string,
+        data: {
+          name: values.name,
+          designation: values.designation,
+          bio: values.bio,
+          image: values.image,
+          demoVideo: values.demoVideo,
+          pricing: values.pricing,
+        },
       });
 
       if (res.success) {
         notify.success(res.message);
-        setIsAddModalOpen(false);
+        setIsEditModalOpen(false);
 
         mutate(
           (key) =>
             typeof key === "string" && key.startsWith("/influencers"),
         );
-        addForm.reset();
+        editForm.reset();
       }
     } catch (error: any) {
       notify.error(error.message || "Something went wrong!");
     }
   };
 
+  // Reset form when selectedInfluencer changes or modal opens
   useEffect(() => {
-    if (isAddModalOpen) {
-      addForm.reset({
-        name: "",
-        designation: "",
-        bio: "",
-        image: "",
-        demoVideo: "",
-        pricing: [
-          { duration: "30 sec", price: 3000 },
-          { duration: "60 sec", price: 5000 },
-          { duration: "2 min", price: 7000 },
-          { duration: "5 min", price: 10000 },
-        ],
+    if (selectedInfluencer && isEditModalOpen) {
+      editForm.reset({
+        name: selectedInfluencer.name || "",
+        designation: selectedInfluencer.designation || "",
+        bio: selectedInfluencer.bio || "",
+        image: selectedInfluencer.image || "",
+        demoVideo: selectedInfluencer.demoVideo || "",
+        pricing: selectedInfluencer.pricing?.length
+          ? selectedInfluencer.pricing
+          : [{ duration: "", price: 0 }],
       });
     }
-  }, [isAddModalOpen, addForm]);
+  }, [isEditModalOpen, selectedInfluencer, editForm]);
 
   return (
-    <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+    <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Influencer</DialogTitle>
+          <DialogTitle>Edit Influencer</DialogTitle>
           <DialogDescription>
-            Enter the influencer details below. Click submit when
+            Update the influencer details below. Click submit when
             you're done.
           </DialogDescription>
         </DialogHeader>
-        <Form {...addForm}>
+        <Form {...editForm}>
           <form
-            onSubmit={addForm.handleSubmit(onAddSubmit)}
+            onSubmit={editForm.handleSubmit(onEditSubmit)}
             className="space-y-4 py-4"
           >
             {/* Basic Information */}
@@ -162,7 +162,7 @@ export default function AdminInfluencerAddModal({
               </h3>
 
               <FormField
-                control={addForm.control}
+                control={editForm.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
@@ -180,7 +180,7 @@ export default function AdminInfluencerAddModal({
               />
 
               <FormField
-                control={addForm.control}
+                control={editForm.control}
                 name="designation"
                 render={({ field }) => (
                   <FormItem>
@@ -197,7 +197,7 @@ export default function AdminInfluencerAddModal({
               />
 
               <FormField
-                control={addForm.control}
+                control={editForm.control}
                 name="bio"
                 render={({ field }) => (
                   <FormItem>
@@ -222,7 +222,7 @@ export default function AdminInfluencerAddModal({
               </h3>
 
               <FormField
-                control={addForm.control}
+                control={editForm.control}
                 name="image"
                 render={({ field }) => (
                   <FormItem>
@@ -239,7 +239,7 @@ export default function AdminInfluencerAddModal({
               />
 
               <FormField
-                control={addForm.control}
+                control={editForm.control}
                 name="demoVideo"
                 render={({ field }) => (
                   <FormItem>
@@ -280,7 +280,7 @@ export default function AdminInfluencerAddModal({
                 >
                   <div className="flex-1 grid grid-cols-2 gap-3">
                     <FormField
-                      control={addForm.control}
+                      control={editForm.control}
                       name={`pricing.${index}.duration`}
                       render={({ field }) => (
                         <FormItem>
@@ -298,7 +298,7 @@ export default function AdminInfluencerAddModal({
                       )}
                     />
                     <FormField
-                      control={addForm.control}
+                      control={editForm.control}
                       name={`pricing.${index}.price`}
                       render={({ field }) => (
                         <FormItem>
@@ -339,9 +339,9 @@ export default function AdminInfluencerAddModal({
                   )}
                 </div>
               ))}
-              {addForm.formState.errors.pricing && (
+              {editForm.formState.errors.pricing && (
                 <p className="text-sm font-medium text-destructive">
-                  {addForm.formState.errors.pricing.message}
+                  {editForm.formState.errors.pricing.message}
                 </p>
               )}
             </div>
@@ -351,17 +351,17 @@ export default function AdminInfluencerAddModal({
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setIsAddModalOpen(false);
-                  addForm.reset();
+                  setIsEditModalOpen(false);
+                  editForm.reset();
                 }}
               >
                 Cancel
               </Button>
-              <Button disabled={isCreating} type="submit">
-                {isCreating ? (
+              <Button type="submit" disabled={isUpdating}>
+                {isUpdating ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  "Submit"
+                  "Update"
                 )}
               </Button>
             </div>

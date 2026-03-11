@@ -50,11 +50,12 @@ import { IInfluencer } from "@/types";
 import { formatDate, formatPrice } from "@/utils";
 import Swal from "sweetalert2";
 import InfluencersTableLoader from "@/components/loaders/InfluencerTableLoader";
-// import AdminInfluencerAddModal from "@/components/modals/AdminInfluencerAddModal";
-// import AdminInfluencerEditModal from "@/components/modals/AdminInfluencerEditModal";
+
 import AdminInfluencerImagePreviewModal from "@/components/modals/AdminInfluencerImagePreviewModal";
 import AdminInfluencerVideoPreviewModal from "@/components/modals/AdminInfluencerVideoPreviewModal";
-import AdminInfluencerAddModal from '@/components/modals/AdminInfluencerAddModal';
+import AdminInfluencerAddModal from "@/components/modals/AdminInfluencerAddModal";
+import AdminInfluencerEditModal from "@/components/modals/AdminInfluencerEditModal";
+import { mutate } from "swr";
 
 export default function InfluencersPage() {
   const { data, isLoading } = useGetInfluencers(0, 0);
@@ -71,7 +72,7 @@ export default function InfluencersPage() {
     null,
   );
 
-  const { deleteItem, revalidate } = useDelete("/influencers");
+  const { deleteItem } = useDelete("/influencers");
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -93,7 +94,11 @@ export default function InfluencersPage() {
             icon: "success",
           });
 
-          revalidate();
+          mutate(
+            (key) =>
+              typeof key === "string" &&
+              key.startsWith("/influencers"),
+          );
         }
       }
     });
@@ -157,7 +162,7 @@ export default function InfluencersPage() {
       cell: ({ row }) => (
         <div>
           <div className="font-semibold text-lg">
-            {row.getValue("name")}
+            {(row.getValue("name") as string).slice(0, 15)}
           </div>
           <div className="text-xs text-muted-foreground">
             {row.original.designation}
@@ -394,17 +399,17 @@ export default function InfluencersPage() {
         setPreviewVideo={setPreviewVideo}
       />
 
-      {/* Edit Influencer Modal */}
-      {/* <AdminInfluencerEditModal
-        selectedInfluencer={selectedInfluencer}
-        isEditModalOpen={isEditModalOpen}
-        setIsEditModalOpen={setIsEditModalOpen}
-      /> */}
-
       {/* Add New Influencer Modal */}
       <AdminInfluencerAddModal
         isAddModalOpen={isAddModalOpen}
         setIsAddModalOpen={setIsAddModalOpen}
+      />
+
+      {/* Edit Influencer Modal */}
+      <AdminInfluencerEditModal
+        selectedInfluencer={selectedInfluencer}
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
       />
     </>
   );

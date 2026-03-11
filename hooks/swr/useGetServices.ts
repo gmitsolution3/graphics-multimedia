@@ -7,6 +7,6 @@ export const useGetServices = () => {
   return {
     data,
     isLoading,
-    refetch: mutate,
+    refetch: () => mutate,
   };
 };

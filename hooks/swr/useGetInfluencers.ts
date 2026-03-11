@@ -1,15 +1,15 @@
-import { fetcher } from "@/lib/fetchers/fetcher";
 import useSWR from "swr";
+import { fetcher } from "@/lib/fetchers/fetcher";
 
 export const useGetInfluencers = (page: number, limit: number) => {
-  const { data, isLoading, mutate } = useSWR(
-    `/influencers?page=${page}&limit=${limit}`,
-    fetcher,
-  );
+  const key = `/influencers?page=${page}&limit=${limit}`;
+
+  const { data, isLoading, mutate } = useSWR(key, fetcher);
 
   return {
     data,
     isLoading,
-    refetch: mutate,
+    refetch: () => mutate(),
+    key,
   };
 };

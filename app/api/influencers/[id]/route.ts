@@ -56,6 +56,7 @@ export async function PATCH(req: Request, { params }: Params) {
 
     return NextResponse.json({
       success: true,
+      message: "Influencer updated successfully.",
       data: influencer,
     });
   } catch (error) {

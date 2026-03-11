@@ -11,6 +11,6 @@ export function useGetById(url: string, id?: string) {
     data,
     isLoading,
     error,
-    refetch: mutate,
+    refetch: () => mutate,
   };
 }

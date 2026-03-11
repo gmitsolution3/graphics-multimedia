@@ -7,6 +7,6 @@ export const useGetPackages = () => {
   return {
     data,
     isLoading,
-    refetch: mutate,
+    refetch: () => mutate,
   };
 };

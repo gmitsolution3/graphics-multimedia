@@ -10,6 +10,6 @@ export const useGetBookings = (type: string) => {
   return {
     data,
     isLoading,
-    refetch: mutate,
+    refetch: () => mutate,
   };
 };
