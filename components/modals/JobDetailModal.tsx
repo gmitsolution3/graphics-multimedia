@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { IJobPosting } from "@/types";
+import { useRouter } from "next/navigation";
 
 export default function JobDetailModal({
   job,
@@ -25,14 +26,7 @@ export default function JobDetailModal({
 }) {
   if (!isOpen || !job) return null;
 
-  const formatSalary = (
-    min: number,
-    max: number,
-    currency: string,
-    period: string,
-  ) => {
-    return `${currency} ${min.toLocaleString()} - ${max.toLocaleString()}/${period}`;
-  };
+  const router = useRouter();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
@@ -191,10 +185,8 @@ export default function JobDetailModal({
               Send applications to: {job.contactEmail}
             </p>
             <Button
-              onClick={() =>
-                (window.location.href = `mailto:${job.contactEmail}`)
-              }
-              className="relative overflow-hidden group bg-transparent border border-primary/30 hover:border-primary text-foreground uppercase text-xs tracking-[0.2em] px-6 py-4 rounded-none transition-all duration-500"
+              onClick={() => router.push(`/apply-for-job/${job._id}`)}
+              className="relative overflow-hidden group bg-transparent border border-primary/30 hover:border-primary text-foreground uppercase text-xs tracking-[0.2em] px-6 py-4 rounded-none transition-all duration-500 hover:text-white"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Apply Now

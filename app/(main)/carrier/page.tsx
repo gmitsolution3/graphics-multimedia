@@ -14,129 +14,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/assets/logo.png";
-import JobDetailModal from '@/components/modals/JobDetailModal';
+import JobDetailModal from "@/components/modals/JobDetailModal";
 import { IJobPosting } from "@/types";
+import { useGetJobPostings } from "@/hooks/swr/useGetJobPostings";
+import JobCardloader from "@/components/loaders/JobCardLoader";
 
-
-// Sample job openings data
-const jobOpenings: IJobPosting[] = [
-  {
-    id: "job_001",
-    title: "Frontend Developer",
-    department: "Development",
-    location: "Dhaka, Bangladesh",
-    employmentType: "Full-time",
-    workplaceType: "Hybrid",
-    experienceLevel: "Junior",
-    experienceRequired: "1-2 years",
-    salaryRange: {
-      min: 30000,
-      max: 50000,
-      period: "month",
-    },
-    description:
-      "We are looking for a passionate Frontend Developer to build modern web applications.",
-    responsibilities: [
-      "Develop responsive web interfaces",
-      "Collaborate with backend developers",
-      "Optimize performance",
-    ],
-    requirements: [
-      "Strong knowledge of HTML, CSS, JavaScript",
-      "Experience with React or Next.js",
-      "Understanding of Git",
-    ],
-    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-    benefits: [
-      "Competitive salary",
-      "Friendly work environment",
-      "Career growth opportunities",
-    ],
-    applicationDeadline: "2026-04-15",
-    openings: 2,
-    postedAt: "2026-03-11",
-    isActive: true,
-    contactEmail: "careers@graphicsmultimedia.com",
-  },
-  {
-    id: "job_002",
-    title: "UI/UX Designer",
-    department: "Design",
-    location: "Remote",
-    employmentType: "Full-time",
-    workplaceType: "Remote",
-    experienceLevel: "Mid",
-    experienceRequired: "3-5 years",
-    salaryRange: {
-      min: 40000,
-      max: 60000,
-      period: "month",
-    },
-    description:
-      "Seeking a creative UI/UX Designer to craft beautiful and intuitive user experiences.",
-    responsibilities: [
-      "Create wireframes and prototypes",
-      "Conduct user research",
-      "Design user interfaces",
-    ],
-    requirements: [
-      "Proficiency in Figma",
-      "Experience with user testing",
-      "Portfolio of design work",
-    ],
-    skills: ["Figma", "Adobe XD", "User Research", "Prototyping"],
-    benefits: [
-      "Flexible working hours",
-      "Remote work setup",
-      "Professional development",
-    ],
-    applicationDeadline: "2026-04-20",
-    openings: 1,
-    postedAt: "2026-03-10",
-    isActive: true,
-    contactEmail: "careers@graphicsmultimedia.com",
-  },
-  {
-    id: "job_003",
-    title: "Backend Developer",
-    department: "Development",
-    location: "Dhaka, Bangladesh",
-    employmentType: "Full-time",
-    workplaceType: "Onsite",
-    experienceLevel: "Senior",
-    experienceRequired: "5+ years",
-    salaryRange: {
-      min: 60000,
-      max: 90000,
-      period: "month",
-    },
-    description:
-      "Looking for an experienced Backend Developer to build scalable server-side applications.",
-    responsibilities: [
-      "Design and implement APIs",
-      "Database management",
-      "System architecture",
-    ],
-    requirements: [
-      "Experience with Node.js or Python",
-      "Database expertise",
-      "Cloud services knowledge",
-    ],
-    skills: ["Node.js", "Python", "PostgreSQL", "AWS"],
-    benefits: [
-      "Higher salary range",
-      "Leadership opportunities",
-      "Annual bonus",
-    ],
-    applicationDeadline: "2026-04-10",
-    openings: 1,
-    postedAt: "2026-03-09",
-    isActive: true,
-    contactEmail: "careers@graphicsmultimedia.com",
-  },
-];
-
-// Main Career Page
 export default function CareerPage() {
   const [selectedJob, setSelectedJob] = useState<IJobPosting | null>(
     null,
@@ -144,19 +26,35 @@ export default function CareerPage() {
   const [filterDepartment, setFilterDepartment] =
     useState<string>("All");
 
+  const { data, isLoading } = useGetJobPostings();
+
+  const jobPostings: IJobPosting[] = data?.data || [];
+
   const departments = [
     "All",
-    ...new Set(jobOpenings.map((job) => job.department)),
+    ...new Set(jobPostings.map((job: IJobPosting) => job.department)),
   ];
 
   const filteredJobs =
     filterDepartment === "All"
-      ? jobOpenings
-      : jobOpenings.filter(
-          (job) => job.department === filterDepartment,
+      ? jobPostings
+      : jobPostings.filter(
+          (job: IJobPosting) => job.department === filterDepartment,
         );
 
-  const activeJobs = filteredJobs.filter((job) => job.isActive);
+  const activeJobs = filteredJobs.filter(
+    (job: IJobPosting) => job.isActive,
+  );
+
+  // Calculate stats with loading state consideration
+  const totalPositions = jobPostings.length;
+  const totalDepartments = new Set(
+    jobPostings.map((j: IJobPosting) => j.department),
+  ).size;
+  const totalHires = jobPostings.reduce(
+    (acc: number, job: IJobPosting) => acc + job.openings,
+    0,
+  );
 
   return (
     <section className="py-20 lg:py-28 bg-card min-h-screen">
@@ -195,7 +93,11 @@ export default function CareerPage() {
         <div className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           <div className="text-center">
             <div className="text-3xl font-light text-primary/80 mb-2">
-              {jobOpenings.length}
+              {isLoading ? (
+                <div className="h-9 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto"></div>
+              ) : (
+                totalPositions
+              )}
             </div>
             <div className="text-xs tracking-[0.2em] uppercase opacity-40">
               Open Positions
@@ -204,7 +106,11 @@ export default function CareerPage() {
           </div>
           <div className="text-center">
             <div className="text-3xl font-light text-primary/80 mb-2">
-              {new Set(jobOpenings.map((j) => j.department)).size}
+              {isLoading ? (
+                <div className="h-9 w-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto"></div>
+              ) : (
+                totalDepartments
+              )}
             </div>
             <div className="text-xs tracking-[0.2em] uppercase opacity-40">
               Departments
@@ -213,9 +119,10 @@ export default function CareerPage() {
           </div>
           <div className="text-center">
             <div className="text-3xl font-light text-primary/80 mb-2">
-              {jobOpenings.reduce(
-                (acc, job) => acc + job.openings,
-                0,
+              {isLoading ? (
+                <div className="h-9 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto"></div>
+              ) : (
+                totalHires
               )}
             </div>
             <div className="text-xs tracking-[0.2em] uppercase opacity-40">
@@ -225,7 +132,11 @@ export default function CareerPage() {
           </div>
           <div className="text-center">
             <div className="text-3xl font-light text-primary/80 mb-2">
-              Hybrid
+              {isLoading ? (
+                <div className="h-9 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto"></div>
+              ) : (
+                "Hybrid"
+              )}
             </div>
             <div className="text-xs tracking-[0.2em] uppercase opacity-40">
               Work Mode
@@ -240,28 +151,47 @@ export default function CareerPage() {
             <span className="text-xs tracking-[0.2em] uppercase opacity-40 mr-2">
               Filter:
             </span>
-            {departments.map((dept) => (
-              <button
-                key={dept}
-                onClick={() => setFilterDepartment(dept)}
-                className={`relative px-4 py-2 text-xs tracking-wider transition-colors ${
-                  filterDepartment === dept
-                    ? "text-primary"
-                    : "opacity-40 hover:opacity-60"
-                }`}
-              >
-                {dept}
-                {filterDepartment === dept && (
-                  <span className="absolute -bottom-1 left-0 w-full h-px bg-primary"></span>
-                )}
-              </button>
-            ))}
+            {isLoading ? (
+              // Skeleton filters
+              <>
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="h-8 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                  ></div>
+                ))}
+              </>
+            ) : (
+              departments.map((dept) => (
+                <button
+                  key={dept}
+                  onClick={() => setFilterDepartment(dept)}
+                  className={`relative px-4 py-2 text-xs tracking-wider transition-colors ${
+                    filterDepartment === dept
+                      ? "text-primary"
+                      : "opacity-40 hover:opacity-60"
+                  }`}
+                >
+                  {dept}
+                  {filterDepartment === dept && (
+                    <span className="absolute -bottom-1 left-0 w-full h-px bg-primary"></span>
+                  )}
+                </button>
+              ))
+            )}
           </div>
         </div>
 
         {/* Jobs List */}
         <div className="max-w-4xl mx-auto space-y-4">
-          {activeJobs.length > 0 ? (
+          {isLoading ? (
+            // Show 5 skeleton cards while loading
+            <>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <JobCardloader key={i} />
+              ))}
+            </>
+          ) : activeJobs.length > 0 ? (
             activeJobs.map((job) => (
               <div
                 key={job._id}
@@ -308,9 +238,8 @@ export default function CareerPage() {
                   <div className="flex flex-row md:flex-col items-center md:items-end gap-4 md:gap-2">
                     <div className="text-right">
                       <p className="text-sm opacity-60">
-                        BDT{" "}
-                        {job.salaryRange.min}k - {job.salaryRange.max}
-                        k
+                        BDT {job.salaryRange.min}k -{" "}
+                        {job.salaryRange.max}k
                       </p>
                       <p className="text-xs opacity-30">
                         /{job.salaryRange.period}
