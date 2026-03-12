@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
@@ -25,9 +26,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
-import { useEffect, Dispatch, SetStateAction } from "react";
+import { useEffect, Dispatch, SetStateAction, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -137,15 +138,27 @@ const defaultFormValues: JobPostingFormValues = {
   contactEmail: "",
 };
 
+// Define tabs (reorganized)
+const TABS = [
+  { id: "basic", label: "Basic Info", icon: "📋" },
+  { id: "jobDetails", label: "Job Details & Salary", icon: "💼" },
+  { id: "requirements", label: "Requirements & Skills", icon: "⚙️" },
+  { id: "additional", label: "Additional Info", icon: "ℹ️" },
+] as const;
+
+type TabId = typeof TABS[number]["id"];
+
 export default function AdminJobPostingAddModal({
   isAddModalOpen,
   setIsAddModalOpen,
 }: IModalProps) {
   const { createItem, isCreating } = usePost("/job-postings");
+  const [activeTab, setActiveTab] = useState<TabId>("basic");
 
   const addForm = useForm<JobPostingFormValues>({
     resolver: zodResolver(jobPostingFormSchema),
     defaultValues: defaultFormValues,
+    mode: "onChange",
   });
 
   const {
@@ -205,6 +218,7 @@ export default function AdminJobPostingAddModal({
             key.startsWith("/job-postings"),
         );
         addForm.reset(defaultFormValues);
+        setActiveTab("basic");
       }
     } catch (error: any) {
       notify.error(error.message || "Something went wrong!");
@@ -214,8 +228,48 @@ export default function AdminJobPostingAddModal({
   useEffect(() => {
     if (isAddModalOpen) {
       addForm.reset(defaultFormValues);
+      setActiveTab("basic");
     }
   }, [isAddModalOpen, addForm]);
+
+  // Navigation functions
+  const goToNextTab = () => {
+    const currentIndex = TABS.findIndex((tab) => tab.id === activeTab);
+    if (currentIndex < TABS.length - 1) {
+      // Validate current tab fields before moving to next
+      const currentTabFields = getFieldsForTab(activeTab);
+      addForm.trigger(currentTabFields as any).then((isValid) => {
+        if (isValid) {
+          setActiveTab(TABS[currentIndex + 1].id);
+        }
+      });
+    }
+  };
+
+  const goToPreviousTab = () => {
+    const currentIndex = TABS.findIndex((tab) => tab.id === activeTab);
+    if (currentIndex > 0) {
+      setActiveTab(TABS[currentIndex - 1].id);
+    }
+  };
+
+  // Helper to get fields for a specific tab
+  const getFieldsForTab = (tabId: TabId): (keyof JobPostingFormValues)[] => {
+    switch (tabId) {
+      case "basic":
+        return ["title", "department", "location", "experienceRequired", "openings", "description"];
+      case "jobDetails":
+        return ["employmentType", "workplaceType", "experienceLevel", "salaryRange"];
+      case "jobDescription":
+        return ["description"];
+      case "requirements":
+        return ["responsibilities", "requirements", "skills", "benefits"];
+      case "additional":
+        return ["applicationDeadline", "contactEmail"];
+      default:
+        return [];
+    }
+  };
 
   // Helper to render a Select field
   const renderSelectField = <
@@ -310,381 +364,410 @@ export default function AdminJobPostingAddModal({
 
   return (
     <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Job Posting</DialogTitle>
           <DialogDescription>
-            Enter the job posting details below. Click submit when
-            you're done.
+            Fill in the job posting details step by step. Progress is saved as you go.
           </DialogDescription>
         </DialogHeader>
-        <Form {...addForm}>
-          <form
-            onSubmit={addForm.handleSubmit(onAddSubmit)}
-            className="space-y-6 py-4"
-          >
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                Basic Information
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={addForm.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Job Title</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., Frontend Developer"
-                          autoFocus
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="department"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Department</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., Development"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Location</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., Dhaka, Bangladesh"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="experienceRequired"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Experience Required</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., 1-2 years"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="openings"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Openings</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              parseInt(e.target.value) || 1,
-                            )
-                          }
-                          value={field.value}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* Job Details */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                Job Details
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                {renderSelectField(
-                  "Employment Type",
-                  "employmentType",
-                  [
-                    "Full-time",
-                    "Part-time",
-                    "Contract",
-                    "Internship",
-                  ],
-                  "Select employment type",
-                )}
-                {renderSelectField(
-                  "Workplace Type",
-                  "workplaceType",
-                  ["Onsite", "Remote", "Hybrid"],
-                  "Select workplace type",
-                )}
-                {renderSelectField(
-                  "Experience Level",
-                  "experienceLevel",
-                  ["Junior", "Mid", "Senior"],
-                  "Select experience level",
-                )}
-              </div>
-            </div>
-
-            {/* Salary Range */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                Salary Range
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                <FormField
-                  control={addForm.control}
-                  name="salaryRange.min"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Minimum (BDT)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              parseInt(e.target.value) || 0,
-                            )
-                          }
-                          value={field.value}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="salaryRange.max"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Maximum (BDT)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              parseInt(e.target.value) || 0,
-                            )
-                          }
-                          value={field.value}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="salaryRange.period"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Period</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select period" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="month">
-                            Per Month
-                          </SelectItem>
-                          <SelectItem value="year">
-                            Per Year
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                Description
-              </h3>
-              <FormField
-                control={addForm.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Job Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter detailed job description..."
-                        className="resize-none min-h-[150px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Array Fields */}
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                  Responsibilities
-                </h3>
-                {renderArrayFields(
-                  "Responsibilities",
-                  responsibilityFields,
-                  appendResponsibility,
-                  removeResponsibility,
-                  "responsibilities",
-                  "e.g., Build and maintain user interfaces",
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                  Requirements
-                </h3>
-                {renderArrayFields(
-                  "Requirements",
-                  requirementFields,
-                  appendRequirement,
-                  removeRequirement,
-                  "requirements",
-                  "e.g., Bachelor's degree in Computer Science",
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                  Skills
-                </h3>
-                {renderArrayFields(
-                  "Skills",
-                  skillFields,
-                  appendSkill,
-                  removeSkill,
-                  "skills",
-                  "e.g., React, Next.js, TypeScript",
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                  Benefits
-                </h3>
-                {renderArrayFields(
-                  "Benefits",
-                  benefitFields,
-                  appendBenefit,
-                  removeBenefit,
-                  "benefits",
-                  "e.g., Friendly work environment",
-                )}
-              </div>
-            </div>
-
-            {/* Additional Information */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
-                Additional Information
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={addForm.control}
-                  name="applicationDeadline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Application Deadline</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={addForm.control}
-                  name="contactEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="careers@company.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setIsAddModalOpen(false);
-                  addForm.reset(defaultFormValues);
-                }}
+        
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabId)} className="w-full">
+          <TabsList className="grid grid-cols-4 w-full mb-6">
+            {TABS.map((tab) => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="text-xs px-2 py-1.5"
+                title={tab.label}
               >
-                Cancel
-              </Button>
-              <Button disabled={isCreating} type="submit">
-                {isCreating ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  "Submit"
-                )}
-              </Button>
-            </div>
-          </form>
-        </Form>
+                <span className="hidden md:inline">{tab.icon} {tab.label}</span>
+                <span className="md:hidden">{tab.icon}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <Form {...addForm}>
+            <form onSubmit={addForm.handleSubmit(onAddSubmit)}>
+              {/* Basic Information Tab (with Description) */}
+              <TabsContent value="basic" className="space-y-4 py-2">
+                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                  Basic Information
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Job Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Frontend Developer"
+                            autoFocus
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="department"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Department</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Development"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Dhaka, Bangladesh"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="experienceRequired"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Experience Required</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., 1-2 years"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="openings"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Openings</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(
+                                parseInt(e.target.value) || 1,
+                              )
+                            }
+                            value={field.value}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <FormField
+                    control={addForm.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Job Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter detailed job description..."
+                            className="resize-none min-h-[150px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </TabsContent>
+
+              {/* Job Details & Salary Tab (merged) */}
+              <TabsContent value="jobDetails" className="space-y-4 py-2">
+                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                  Job Details
+                </h3>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  {renderSelectField(
+                    "Employment Type",
+                    "employmentType",
+                    ["Full-time", "Part-time", "Contract", "Internship"],
+                    "Select employment type",
+                  )}
+                  {renderSelectField(
+                    "Workplace Type",
+                    "workplaceType",
+                    ["Onsite", "Remote", "Hybrid"],
+                    "Select workplace type",
+                  )}
+                  {renderSelectField(
+                    "Experience Level",
+                    "experienceLevel",
+                    ["Junior", "Mid", "Senior"],
+                    "Select experience level",
+                  )}
+                </div>
+
+                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2 mt-6">
+                  Salary Range
+                </h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="salaryRange.min"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Minimum (BDT)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(
+                                parseInt(e.target.value) || 0,
+                              )
+                            }
+                            value={field.value}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="salaryRange.max"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Maximum (BDT)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(
+                                parseInt(e.target.value) || 0,
+                              )
+                            }
+                            value={field.value}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="salaryRange.period"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Period</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select period" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="month">
+                              Per Month
+                            </SelectItem>
+                            <SelectItem value="year">
+                              Per Year
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </TabsContent>
+
+              {/* Job Description Tab (removed - now in basic) */}
+              
+              {/* Requirements & Skills Tab (merged) */}
+              <TabsContent value="requirements" className="space-y-6 py-2">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                    Responsibilities
+                  </h3>
+                  {renderArrayFields(
+                    "Responsibilities",
+                    responsibilityFields,
+                    appendResponsibility,
+                    removeResponsibility,
+                    "responsibilities",
+                    "e.g., Build and maintain user interfaces",
+                  )}
+                </div>
+
+                <div className="space-y-4 mt-6">
+                  <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                    Requirements
+                  </h3>
+                  {renderArrayFields(
+                    "Requirements",
+                    requirementFields,
+                    appendRequirement,
+                    removeRequirement,
+                    "requirements",
+                    "e.g., Bachelor's degree in Computer Science",
+                  )}
+                </div>
+
+                <div className="space-y-4 mt-6">
+                  <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                    Skills
+                  </h3>
+                  {renderArrayFields(
+                    "Skills",
+                    skillFields,
+                    appendSkill,
+                    removeSkill,
+                    "skills",
+                    "e.g., React, Next.js, TypeScript",
+                  )}
+                </div>
+
+                <div className="space-y-4 mt-6">
+                  <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                    Benefits
+                  </h3>
+                  {renderArrayFields(
+                    "Benefits",
+                    benefitFields,
+                    appendBenefit,
+                    removeBenefit,
+                    "benefits",
+                    "e.g., Friendly work environment",
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* Additional Information Tab */}
+              <TabsContent value="additional" className="space-y-4 py-2">
+                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">
+                  Additional Information
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="applicationDeadline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Application Deadline</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={addForm.control}
+                    name="contactEmail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contact Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="careers@company.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </TabsContent>
+
+              {/* Navigation Buttons */}
+              <div className="flex justify-between items-center pt-6 border-t mt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={goToPreviousTab}
+                  disabled={activeTab === "basic"}
+                  className="gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsAddModalOpen(false);
+                      addForm.reset(defaultFormValues);
+                      setActiveTab("basic");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+
+                  {activeTab === "additional" ? (
+                    <Button disabled={isCreating} type="submit">
+                      {isCreating ? (
+                        <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                      ) : null}
+                      Submit
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={goToNextTab}
+                      className="gap-2"
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </form>
+          </Form>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
