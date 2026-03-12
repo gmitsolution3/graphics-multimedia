@@ -15,37 +15,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/assets/logo.png";
 import JobDetailModal from '@/components/modals/JobDetailModal';
+import { IJobPosting } from "@/types";
 
-// Job type definition
-interface JobOpening {
-  id: string;
-  title: string;
-  department: string;
-  location: string;
-  employmentType: string;
-  workplaceType: string;
-  experienceLevel: string;
-  experienceRequired: string;
-  salaryRange: {
-    min: number;
-    max: number;
-    currency: string;
-    period: string;
-  };
-  description: string;
-  responsibilities: string[];
-  requirements: string[];
-  skills: string[];
-  benefits: string[];
-  applicationDeadline: string;
-  openings: number;
-  postedAt: string;
-  isActive: boolean;
-  contactEmail: string;
-}
 
 // Sample job openings data
-const jobOpenings: JobOpening[] = [
+const jobOpenings: IJobPosting[] = [
   {
     id: "job_001",
     title: "Frontend Developer",
@@ -58,7 +32,6 @@ const jobOpenings: JobOpening[] = [
     salaryRange: {
       min: 30000,
       max: 50000,
-      currency: "BDT",
       period: "month",
     },
     description:
@@ -92,12 +65,11 @@ const jobOpenings: JobOpening[] = [
     location: "Remote",
     employmentType: "Full-time",
     workplaceType: "Remote",
-    experienceLevel: "Mid-Level",
+    experienceLevel: "Mid",
     experienceRequired: "3-5 years",
     salaryRange: {
       min: 40000,
       max: 60000,
-      currency: "BDT",
       period: "month",
     },
     description:
@@ -130,13 +102,12 @@ const jobOpenings: JobOpening[] = [
     department: "Development",
     location: "Dhaka, Bangladesh",
     employmentType: "Full-time",
-    workplaceType: "On-site",
+    workplaceType: "Onsite",
     experienceLevel: "Senior",
     experienceRequired: "5+ years",
     salaryRange: {
       min: 60000,
       max: 90000,
-      currency: "BDT",
       period: "month",
     },
     description:
@@ -167,7 +138,7 @@ const jobOpenings: JobOpening[] = [
 
 // Main Career Page
 export default function CareerPage() {
-  const [selectedJob, setSelectedJob] = useState<JobOpening | null>(
+  const [selectedJob, setSelectedJob] = useState<IJobPosting | null>(
     null,
   );
   const [filterDepartment, setFilterDepartment] =
@@ -293,7 +264,7 @@ export default function CareerPage() {
           {activeJobs.length > 0 ? (
             activeJobs.map((job) => (
               <div
-                key={job.id}
+                key={job._id}
                 onClick={() => setSelectedJob(job)}
                 className="group border border-border/40 p-6 hover:border-primary/20 transition-all duration-300 cursor-pointer"
               >
@@ -337,7 +308,7 @@ export default function CareerPage() {
                   <div className="flex flex-row md:flex-col items-center md:items-end gap-4 md:gap-2">
                     <div className="text-right">
                       <p className="text-sm opacity-60">
-                        {job.salaryRange.currency}{" "}
+                        BDT{" "}
                         {job.salaryRange.min}k - {job.salaryRange.max}
                         k
                       </p>

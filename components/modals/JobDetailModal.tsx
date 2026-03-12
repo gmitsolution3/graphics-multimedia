@@ -12,39 +12,14 @@ import {
   Heart,
 } from "lucide-react";
 
-interface JobOpening {
-  id: string;
-  title: string;
-  department: string;
-  location: string;
-  employmentType: string;
-  workplaceType: string;
-  experienceLevel: string;
-  experienceRequired: string;
-  salaryRange: {
-    min: number;
-    max: number;
-    currency: string;
-    period: string;
-  };
-  description: string;
-  responsibilities: string[];
-  requirements: string[];
-  skills: string[];
-  benefits: string[];
-  applicationDeadline: string;
-  openings: number;
-  postedAt: string;
-  isActive: boolean;
-  contactEmail: string;
-}
+import { IJobPosting } from "@/types";
 
 export default function JobDetailModal({
   job,
   isOpen,
   onClose,
 }: {
-  job: JobOpening | null;
+  job: IJobPosting | null;
   isOpen: boolean;
   onClose: () => void;
 }) {

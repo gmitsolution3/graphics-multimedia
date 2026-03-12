@@ -176,7 +176,7 @@ export default function ProfilePage() {
     return (
       <section className="container mx-auto px-5 lg:px-0 py-8">
         <Card className="p-8 text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 bg-primary" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading profile...</p>
         </Card>
       </section>

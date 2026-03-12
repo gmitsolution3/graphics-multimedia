@@ -1,16 +1,19 @@
-import { Document } from "mongoose";
-
 export interface ISalaryRange {
   min: number;
   max: number;
   period: "month" | "year";
 }
 
-export interface IJobPosting extends Document {
+export interface IJobPosting {
+  _id: string;
   title: string;
   department: string;
   location: string;
-  employmentType: "Full-time" | "Part-time" | "Contract" | "Internship";
+  employmentType:
+    | "Full-time"
+    | "Part-time"
+    | "Contract"
+    | "Internship";
   workplaceType: "Onsite" | "Remote" | "Hybrid";
   experienceLevel: "Junior" | "Mid" | "Senior";
   experienceRequired: string;

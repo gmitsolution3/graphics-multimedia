@@ -5,6 +5,8 @@ import {
   UserCircle,
   Box,
   BookCheck,
+  Speech,
+  FileStack
 } from "lucide-react";
 
 export const mainMenuItems = [
@@ -26,16 +28,25 @@ export const mainMenuItems = [
   {
     title: "Influencers",
     url: "/admin-dashboard/influencers",
-    icon: FileSpreadsheet,
+    icon: Speech,
   },
   {
     title: "Bookings",
     url: "/admin-dashboard/bookings/regular",
     icon: BookCheck,
   },
+  {
+    title: "Job Posting",
+    url: "/admin-dashboard/job-posting",
+    icon: FileStack,
+  },
 ];
 
 export const settingsItems = [
-  { title: "Profile", url: "/admin-dashboard/profile", icon: UserCircle },
+  {
+    title: "Profile",
+    url: "/admin-dashboard/profile",
+    icon: UserCircle,
+  },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
