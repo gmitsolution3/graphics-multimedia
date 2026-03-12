@@ -33,8 +33,13 @@ export async function GET(req: Request) {
   try {
     await connectDB();
 
-    const applications =
-      await JobApplication.find().populate("jobId");
+    const { searchParams } = new URL(req.url);
+
+    const jobId = searchParams.get("jobId");
+
+    const applications = await JobApplication.find({
+      jobId,
+    }).populate("jobId");
 
     return NextResponse.json({
       success: true,

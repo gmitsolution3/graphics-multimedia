@@ -35,9 +35,9 @@ interface DashboardLayoutProps {
 export default async function AdminDashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  
   await requireAuth({
-    
+    roles: ["admin"],
+    redirectTo: "/admin-dashboard",
   });
 
   return (

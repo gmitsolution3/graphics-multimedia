@@ -58,6 +58,7 @@ import JobPostingTableLoader from "@/components/loaders/JobPostingTableLoader";
 import AdminJobPostingAddModal from "@/components/modals/AdminJobPostingAddModal";
 import AdminJobPostingEditModal from "@/components/modals/AdminJobPostingEditModal";
 import { mutate } from "swr";
+import { useRouter } from "next/navigation";
 
 export default function JobPostingPage() {
   const { data, isLoading } = useGetJobPostings();
@@ -69,6 +70,8 @@ export default function JobPostingPage() {
     useState<IJobPosting | null>(null);
 
   const { deleteItem } = useDelete("/job-postings");
+
+  const router = useRouter();
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -476,6 +479,15 @@ export default function JobPostingPage() {
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() =>
+                  router.push(
+                    `/admin-dashboard/job-posting/applications?jobId=${row.original._id}`,
+                  )
+                }
+              >
+                View Applications
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleEditClick(row.original)}
               >

@@ -30,3 +30,15 @@ export interface IJobPosting {
   createdAt: Date;
   updatedAt: Date;
 }
+export interface IJobApplication {
+  _id: string;
+  name: string;
+  email: string;
+  address: string;
+  resumeLink: string;
+  expectedSalary: number;
+  jobId: IJobPosting;
+  jobTitle: string;
+  createdAt: string;
+  updatedAt: string;
+}

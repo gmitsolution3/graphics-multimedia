@@ -97,8 +97,6 @@ export default function ApplyForJob() {
         jobTitle: job?.title,
       };
 
-      console.log(payload);
-
       const res = await createItem(payload);
 
       if (res.success) {
