@@ -58,7 +58,7 @@ export default async function Footer() {
   const {data: services} = await getServices();
 
   return (
-    <footer className="bg-foreground text-background border-t border-border">
+    <footer className="bg-primary text-background border-t border-border">
       <div className="container mx-auto px-4 py-16 lg:py-20">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
@@ -115,11 +115,11 @@ export default async function Footer() {
               {services.map((service: IService) => (
                 <li key={service._id}>
                   <div
-                    className="text-sm opacity-60 hover:opacity-100 hover:text-primary transition-all duration-300 inline-block group"
+                    className="text-sm opacity-60 hover:opacity-100 hover:text-white transition-all duration-300 inline-block group"
                   >
                     <span className="flex items-center gap-2">
                       {service.name}
-                      <span className="w-4 h-px bg-primary/0 group-hover:bg-primary/60 group-hover:w-6 transition-all duration-300"></span>
+                      <span className="w-4 h-px bg-primary/0 group-hover:bg-white/60 group-hover:w-6 transition-all duration-300"></span>
                     </span>
                   </div>
                 </li>
@@ -136,11 +136,11 @@ export default async function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm opacity-60 hover:opacity-100 hover:text-primary transition-all duration-300 inline-block group"
+                    className="text-sm opacity-60 hover:opacity-100 hover:text-white transition-all duration-300 inline-block group"
                   >
                     <span className="flex items-center gap-2">
                       {link.label}
-                      <span className="w-4 h-px bg-primary/0 group-hover:bg-primary/60 group-hover:w-6 transition-all duration-300"></span>
+                      <span className="w-4 h-px bg-primary/0 group-hover:bg-white/60 group-hover:w-6 transition-all duration-300"></span>
                     </span>
                   </Link>
                 </li>
@@ -157,11 +157,11 @@ export default async function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm opacity-60 hover:opacity-100 hover:text-primary transition-all duration-300 inline-block group"
+                    className="text-sm opacity-60 hover:opacity-100 hover:text-white transition-all duration-300 inline-block group"
                   >
                     <span className="flex items-center gap-2">
                       {link.label}
-                      <span className="w-4 h-px bg-primary/0 group-hover:bg-primary/60 group-hover:w-6 transition-all duration-300"></span>
+                      <span className="w-4 h-px bg-primary/0 group-hover:bg-white/60 group-hover:w-6 transition-all duration-300"></span>
                     </span>
                   </Link>
                 </li>

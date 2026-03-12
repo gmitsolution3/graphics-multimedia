@@ -56,7 +56,7 @@ import { formatDate, formatPrice } from "@/utils";
 import Swal from "sweetalert2";
 import JobPostingTableLoader from "@/components/loaders/JobPostingTableLoader";
 import AdminJobPostingAddModal from "@/components/modals/AdminJobPostingAddModal";
-// import AdminJobPostingEditModal from "@/components/modals/AdminJobPostingEditModal";
+import AdminJobPostingEditModal from "@/components/modals/AdminJobPostingEditModal";
 import { mutate } from "swr";
 
 export default function JobPostingPage() {
@@ -628,11 +628,11 @@ export default function JobPostingPage() {
       />
 
       {/* Edit Job Modal */}
-      {/* <AdminJobPostingEditModal
+      <AdminJobPostingEditModal
         selectedJobPosting={selectedJobPosting}
         isEditModalOpen={isEditModalOpen}
         setIsEditModalOpen={setIsEditModalOpen}
-      /> */}
+      />
     </>
   );
 }
