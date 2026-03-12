@@ -36,7 +36,9 @@ export default async function AdminDashboardLayout({
   children,
 }: DashboardLayoutProps) {
   
-  await requireAuth(["admin"]);
+  await requireAuth({
+    
+  });
 
   return (
     <html lang="en">

@@ -11,7 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/assets/logo.png";
 import { notify } from "@/utils/toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Validation schema
 const loginSchema = z.object({
@@ -30,6 +30,9 @@ export default function Login() {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const router = useRouter();
+  const params = useSearchParams();
+
+  const redirectTo = params.get("redirect") || "/";
 
   const {
     register,
@@ -61,19 +64,7 @@ export default function Login() {
       if (res?.data?.token) {
         notify.success("Login successful.");
 
-        const user = res.data.user as typeof res.data.user & {
-          role?: "admin" | "user";
-        };
-
-        if (user?.role === "admin") {
-          router.replace("/admin-dashboard");
-        } else {
-          router.replace("/");
-        }
-
-        console.log(res);
-
-        // router.replace("/login");
+        router.push(redirectTo);
       }
     } catch (error: any) {
       setServerError(
@@ -117,9 +108,7 @@ export default function Login() {
             Welcome back
           </h2>
 
-          <p className="text-sm opacity-60">
-            Log in to your account
-          </p>
+          <p className="text-sm opacity-60">Log in to your account</p>
         </div>
 
         {/* Login Form */}
