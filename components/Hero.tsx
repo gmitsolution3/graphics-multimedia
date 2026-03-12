@@ -7,9 +7,9 @@ import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
-import WebDevelopment from "@/assets/web-development.jpeg";
-import DigitalMarketing from "@/assets/digital-marketing.jpeg";
-import GraphicsDesign from "@/assets/graphics-design.jpeg";
+import VideoEditing from "@/assets/video_editing.jpg";
+import DigitalMarketing from "@/assets/marketing.jpg";
+import GraphicsDesign from "@/assets/graphics_design.jpg";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -47,18 +47,18 @@ const slides = [
     ],
   },
   {
-    tag: "Web Development",
-    headline: "We Engineer Seamless Platforms",
-    highlight: "Seamless Platforms",
-    body: "High-performance websites and apps that convert visitors into customers, built with modern tech stacks.",
-    cta: "Start Building",
-    ctaSecondary: "View Portfolio",
-    image: WebDevelopment,
-    imageAlt: "Web development",
+    tag: "Video Editing",
+    headline: "We Craft Stories That Captivate",
+    highlight: "Stories That Captivate",
+    body: "Professional video editing that transforms raw footage into engaging visuals, delivering cinematic quality that grabs attention and drives results.",
+    cta: "Edit My Video",
+    ctaSecondary: "Watch Showreel",
+    image: VideoEditing,
+    imageAlt: "Video editing",
     stats: [
-      { value: "99.9%", label: "Uptime" },
-      { value: "2s", label: "Load Time" },
-      { value: "500+", label: "Sites Delivered" },
+      { value: "4K", label: "Ultra HD Quality" },
+      { value: "48h", label: "Fast Delivery" },
+      { value: "1000+", label: "Videos Produced" },
     ],
   },
 ];
@@ -198,7 +198,7 @@ export default function Hero() {
                     <span key={i}>
                       {part}
                       {i < arr.length - 1 && (
-                        <span className="text-primary/90 font-normal block sm:inline">
+                        <span className="text-white font-normal block sm:inline">
                           {slides[activeIndex].highlight}
                         </span>
                       )}
