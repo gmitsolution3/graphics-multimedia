@@ -150,7 +150,7 @@ export default function ApplyForJob() {
 
   if (isSubmitted) {
     return (
-      <div className="container mx-auto px-5 lg:px-0 py-8">
+      <div className="container mx-auto px-5 lg:px-0 py-[200px]">
         <Card className="max-w-2xl mx-auto">
           <CardHeader className="text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -206,7 +206,7 @@ export default function ApplyForJob() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-center gap-4">
-            <Link href="/jobs">
+            <Link href="/carrier">
               <Button variant="outline">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Jobs
