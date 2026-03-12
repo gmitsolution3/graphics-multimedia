@@ -260,8 +260,6 @@ export default function AdminJobPostingAddModal({
         return ["title", "department", "location", "experienceRequired", "openings", "description"];
       case "jobDetails":
         return ["employmentType", "workplaceType", "experienceLevel", "salaryRange"];
-      case "jobDescription":
-        return ["description"];
       case "requirements":
         return ["responsibilities", "requirements", "skills", "benefits"];
       case "additional":
