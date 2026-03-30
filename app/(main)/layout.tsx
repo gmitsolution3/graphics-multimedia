@@ -21,7 +21,7 @@ const PoppinsFont = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Graphics Multimedia",
+  title: "Graphics Multimedia | Developed by GM IT Solution",
   description: "Strategic digital solutions for modern brands.",
 };
 

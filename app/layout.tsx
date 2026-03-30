@@ -20,8 +20,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Graphics Multimedia",
-  description: "Graphics Multimedia by gm it sollution",
+  title: "Graphics Multimedia | Developed by GM IT Solution",
+  description: "Strategic digital solutions for modern brands.",
 };
 
 export default function RootLayout({
