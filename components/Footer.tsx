@@ -185,7 +185,7 @@ export default async function Footer() {
           <p className="text-sm">
             Powered by{" "}
             <a
-              href="https://facebook.com"
+              href="https://www.gmgroupbd.com"
               target="_blank"
               rel="noopener noreferrer"
               className=" text-gray-300 transition-all duration-300 font-medium"
@@ -201,7 +201,15 @@ export default async function Footer() {
             © {new Date().getFullYear()} Graphics Multimedia
           </p>
           <p className="text-xs">
-            Developed by <a href="https://www.gmitsolution.net" target="_blank" rel="noopener noreferrer" className="text-gray-300">GM IT Solution</a>
+            Developed by{" "}
+            <a
+              href="https://www.gmitsolution.net"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-300"
+            >
+              GM IT Solution
+            </a>
           </p>
         </div>
 
