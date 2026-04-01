@@ -9,7 +9,6 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import FooterLogo from "@/assets/logoWhite.png";
 import Image from "next/image";
 import { getServices } from "@/services/servicesService";
 import { IService } from "@/types";
@@ -66,7 +65,7 @@ export default async function Footer() {
             <Link href="/" className="flex items-center gap-2">
               <div className="w-24">
                 <Image
-                  src={FooterLogo}
+                  src="/images/logoWhite.png"
                   height={300}
                   width={300}
                   alt="Footer Logo"

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Mail, ChevronDown } from "lucide-react";
-import Logo from "@/assets/logo.png";
 import Image from "next/image";
 
 const navItems = [
@@ -118,7 +117,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-2">
             <div className="w-24">
               <Image
-                src={Logo}
+                src="/images/logo.png"
                 height={300}
                 width={300}
                 alt="Header Logo"

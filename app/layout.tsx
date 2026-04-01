@@ -31,6 +31,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="preload" as="image" href="/images/logo.png" />
+      <link rel="preload" as="image" href="/images/logoWhite.png" />
+      <link rel="preload" as="image" href="/images/marketing.jpg" />
       <link rel="preload" as="image" href="/images/marketing.jpg" />
       <link rel="preload" as="image" href="/images/graphics_design.jpg" />
       <link rel="preload" as="image" href="/images/video_editing.jpg" />
