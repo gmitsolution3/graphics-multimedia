@@ -99,7 +99,7 @@ export default function About() {
             {/* Stats Grid with refined styling */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-8">
               {stats.map((stat) => (
-                <AboutCounter key={stat.label} stats={stats} />
+                <AboutCounter key={stat.label} stats={stat} />
               ))}
             </div>
           </div>
