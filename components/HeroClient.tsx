@@ -70,10 +70,6 @@ export default function HeroClient() {
   return (
     <>
       <style>{`
-        @keyframes kenBurns {
-          0%   { transform: scale(1.07); }
-          100% { transform: scale(1.0); }
-        }
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -91,7 +87,6 @@ export default function HeroClient() {
           to   { opacity: 1; transform: translateX(0); }
         }
 
-        .kb         { animation: kenBurns   7s cubic-bezier(0.25,0.46,0.45,0.94) both; }
         .a-tag      { animation: slideLeft  0.5s 0.05s ease both; }
         .a-head     { animation: fadeSlideUp 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both; }
         .a-body     { animation: fadeSlideUp 0.6s 0.28s cubic-bezier(0.16,1,0.3,1) both; }
@@ -126,8 +121,8 @@ export default function HeroClient() {
                   src={sl.image}
                   alt={sl.imageAlt}
                   fill
-                  sizes="100vw" // 🔥 important
-                  quality={75} // 🔥 reduce payload
+                  sizes="100vw"
+                  quality={75}
                   priority={idx === 0}
                   className="object-cover object-center"
                 />
