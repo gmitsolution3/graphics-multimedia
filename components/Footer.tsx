@@ -9,9 +9,9 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import FooterLogo from "@/assets/logoWhite.png"
+import FooterLogo from "@/assets/logoWhite.png";
 import Image from "next/image";
-import { getServices } from '@/services/servicesService';
+import { getServices } from "@/services/servicesService";
 import { IService } from "@/types";
 
 const footerLinks = {
@@ -54,11 +54,10 @@ const socialLinks = [
 ];
 
 export default async function Footer() {
-
-  const {data: services} = await getServices();
+  const { data: services } = await getServices();
 
   return (
-    <footer className="bg-primary text-background border-t border-border">
+    <footer className="bg-primary text-background border-t border-border relative">
       <div className="container mx-auto px-4 py-16 lg:py-20">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
@@ -114,9 +113,7 @@ export default async function Footer() {
             <ul className="space-y-3">
               {services.map((service: IService) => (
                 <li key={service._id}>
-                  <div
-                    className="text-sm opacity-60 hover:opacity-100 hover:text-white transition-all duration-300 inline-block group"
-                  >
+                  <div className="text-sm opacity-60 hover:opacity-100 hover:text-white transition-all duration-300 inline-block group">
                     <span className="flex items-center gap-2">
                       {service.name}
                       <span className="w-4 h-px bg-primary/0 group-hover:bg-white/60 group-hover:w-6 transition-all duration-300"></span>
@@ -170,14 +167,29 @@ export default async function Footer() {
           </div>
         </div>
 
-        <div className="flex items-center justify-end pe-30">
-          <p className="text- opacity-40">
+        {/* Upper Bar with Icons and Powered By */}
+        <div className="flex items-center justify-between mt-12 pt-8">
+          <div className="flex items-center gap-6">
+            {socialLinks.map((social) => (
+              <Link
+                key={social.label}
+                href={social.href}
+                className="text-white opacity-70 hover:opacity-100 transition-opacity group"
+                aria-label={social.label}
+                target="_blank"
+              >
+                <social.icon className="w-4 h-4 transition-colors" />
+              </Link>
+            ))}
+          </div>
+
+          <p className="text-sm">
             Powered by{" "}
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="opacity-60 hover:opacity-100 text-white transition-all duration-300 font-medium"
+              className=" text-gray-300 transition-all duration-300 font-medium"
             >
               gm group
             </a>
@@ -185,25 +197,13 @@ export default async function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mt-16 pt-8 border-t border-border/50">
-          <p className="text-xs opacity-40 order-2 md:order-1">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mt-8 pt-8 border-t border-border/50">
+          <p className="text-xs opacity-80">
             © {new Date().getFullYear()} Graphics Multimedia
           </p>
-
-          {/* Social Links - Minimal styling */}
-          <div className="flex items-center gap-6 order-1 md:order-2">
-            {socialLinks.map((social) => (
-              <Link
-                key={social.label}
-                href={social.href}
-                className="opacity-40 hover:opacity-100 transition-opacity group"
-                aria-label={social.label}
-                target="_blank"
-              >
-                <social.icon className="w-4 h-4 group-hover:text-primary transition-colors" />
-              </Link>
-            ))}
-          </div>
+          <p className="text-xs">
+            Developed by <a href="https://www.gmitsolution.net" target="_blank" rel="noopener noreferrer" className="text-gray-300">GM IT Solution</a>
+          </p>
         </div>
 
         {/* Corner accents */}
