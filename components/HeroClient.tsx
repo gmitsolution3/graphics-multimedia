@@ -23,7 +23,7 @@ const slides = [
     body: "Transform your brand with data-driven strategies. We help businesses grow through innovative solutions and measurable results.",
     cta: "Start Project",
     ctaSecondary: "View Our Work",
-    image: DigitalMarketing,
+    image: "/images/marketing.jpg",
     imageAlt: "Digital marketing",
     stats: [
       { value: "250+", label: "Projects" },
@@ -38,7 +38,7 @@ const slides = [
     body: "From identity to campaign, we build brands that resonate and create lasting impressions across every touchpoint.",
     cta: "Build Your Brand",
     ctaSecondary: "See Case Studies",
-    image: GraphicsDesign,
+    image: "/images/graphics_design.jpg",
     imageAlt: "Graphics design",
     stats: [
       { value: "180+", label: "Brands" },
@@ -53,7 +53,7 @@ const slides = [
     body: "Professional video editing that transforms raw footage into engaging visuals, delivering cinematic quality that grabs attention and drives results.",
     cta: "Edit My Video",
     ctaSecondary: "Watch Showreel",
-    image: VideoEditing,
+    image: "/images/video_editing.jpg",
     imageAlt: "Video editing",
     stats: [
       { value: "4K", label: "Ultra HD Quality" },

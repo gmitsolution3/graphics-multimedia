@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CeoImage from "@/assets/ceo.jpg";
-import AboutCounter from './AboutCounter';
+import AboutCounter from "./AboutCounterWrapper";
 
 const stats = [
   { end: 250, suffix: "+", label: "Projects Delivered" },
@@ -19,9 +19,13 @@ export default function About() {
             <div className="aspect-[5/5] relative overflow-hidden bg-muted">
               <Image
                 src={CeoImage}
-                alt="CEO of Gigital Multimedia"
+                alt="CEO of Graphics Multimedia"
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={70}
+                loading="lazy"
+                placeholder="blur"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
 
               {/* Minimal overlay on hover */}
@@ -94,8 +98,8 @@ export default function About() {
 
             {/* Stats Grid with refined styling */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-8">
-              {stats.map((stat, index) => (
-                <AboutCounter key={index} {...stat} />
+              {stats.map((stat) => (
+                <AboutCounter key={stat.label} stats={stats} />
               ))}
             </div>
           </div>
