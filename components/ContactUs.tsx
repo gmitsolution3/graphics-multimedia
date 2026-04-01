@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import Link from "next/link";
 
 export default function Contact() {
   const [formData, setFormData] = useState({

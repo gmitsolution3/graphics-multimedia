@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import ProjectOne from "@/assets/phonex.jpg";
 import ProjectTwo from "@/assets/huaway.jpg";
@@ -49,12 +48,13 @@ const projects = [
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState("All");
 
-  const filteredProjects =
-    activeCategory === "All"
+  const filteredProjects = useMemo(() => {
+    return activeCategory === "All"
       ? projects
       : projects.filter(
           (project) => project.category === activeCategory,
         );
+  }, [activeCategory]);
 
   return (
     <section id="portfolio" className="py-20 lg:py-28 bg-card">
@@ -104,16 +104,19 @@ export default function Portfolio() {
 
         {/* Portfolio Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-          {filteredProjects.map((project, index) => (
+          {filteredProjects.map((project) => (
             <div
-              key={index}
+              key={project.title}
               className="group relative aspect-[4/4] overflow-hidden bg-muted cursor-pointer"
             >
               <Image
                 src={project.image}
                 alt={project.title}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                quality={70}
+                loading="lazy"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
 
               {/* Minimal overlay */}

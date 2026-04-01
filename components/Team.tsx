@@ -1,21 +1,13 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Linkedin, Twitter } from "lucide-react";
-import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
-import Biplop from "@/assets/biplop.jpg";
-import Esha from "@/assets/esha.jpg";
-import Habib from "@/assets/habib.jpg";
 import Mariam from "@/assets/mariam.jpg";
-import Oli from "@/assets/oli.jpg";
-import Sobuj from "@/assets/sobuj.jpg";
 import Ceo from "@/assets/ceo.jpg";
 
-import Moriom from "@/assets/mariam.jpg";
 import Anik from "@/assets/anik.jpeg";
 import Sabbir from "@/assets/sabbir.jpeg";
 import Siam from "@/assets/siam.jpeg";
@@ -101,40 +93,30 @@ export default function Team() {
         {/* Swiper Slider */}
         <Swiper
           modules={[Autoplay, Pagination, Navigation]}
-          spaceBetween={30}
+          spaceBetween={20}
           slidesPerView={1}
           breakpoints={{
-            640: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-            768: {
-              slidesPerView: 3,
-              spaceBetween: 30,
-            },
-            1024: {
-              slidesPerView: 4,
-              spaceBetween: 30,
-            },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
           }}
           autoplay={{
-            delay: 5000,
+            delay: 3000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
+          speed={500}
+          loop={true}
+          loopAdditionalSlides={1}
+          watchSlidesProgress={true}
           pagination={{
             clickable: true,
             el: ".team-pagination",
-            bulletClass:
-              "swiper-pagination-bullet !bg-primary/20 !opacity-100",
-            bulletActiveClass:
-              "swiper-pagination-bullet-active !bg-primary !w-8 !rounded-full",
           }}
           navigation={{
             nextEl: ".team-button-next",
             prevEl: ".team-button-prev",
           }}
-          loop={true}
           className="team-slider"
         >
           {team.map((member, index) => (
@@ -146,7 +128,10 @@ export default function Team() {
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    quality={70}
+                    loading="lazy"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
 
                   {/* Minimal overlay on hover */}
